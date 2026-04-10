@@ -5,7 +5,7 @@
 // npx vercel --prod
 
 //맥에서 수정시
-//git status
+//git pull
 //git add .
 //git commit -m "맥북에서 수정"
 //git push
