@@ -1,10 +1,11 @@
 // 터미널 열고 아래 쳐서 로컬 주소 복사해서 보기
 // cd C:\Users\Admin\Desktop\claude_test
 // npm run dev
+
 //업데이트 시
 // npx vercel --prod
 
-//맥에서 수정시
+//수정시 항상 염두하세요
 //git pull
 //git add .
 //git commit -m "맥북에서 수정"
