@@ -3,6 +3,12 @@
 // npm run dev
 //업데이트 시
 // npx vercel --prod
+
+//맥에서 수정시
+//git status
+//git add .
+//git commit -m "맥북에서 수정"
+//git push
 import { useState, useEffect } from "react";
 
 // ─── DESIGN TOKENS ──────────────────────────────────────────────────────────
