@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:help.figma.com)",
+      "WebSearch",
+      "WebFetch(domain:developers.figma.com)"
+    ]
+  }
+}

@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>스마트러닝앱 3차 · 컴포넌트 스펙</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --indigo:    #6366f1;
+  --indigo-bg: rgba(99,102,241,.09);
+  --border:    #ebebeb;
+  --divider:   #f3f3f3;
+  --gray-bg:   #f5f5f7;
+  --text-main: #1d1d1f;
+  --text-sub:  #888;
+  --text-muted:#aaa;
+  --radius-card: 14px;
+  --radius-btn:  8px;
+  --sidebar-w:   210px;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--gray-bg);
+  color: var(--text-main);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: #fff;
+  border-right: 1px solid var(--border);
+  padding: 24px 12px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  margin-bottom: 16px;
+}
+.nav-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  margin-bottom: 2px;
+  transition: background .15s, color .15s;
+}
+.nav-btn:hover { background: var(--gray-bg); }
+.nav-btn.active { background: var(--indigo); color: #fff; }
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  padding: 40px 48px;
+  max-width: 900px;
+}
+
+/* ── SECTION ── */
+.section { display: none; }
+.section.visible { display: block; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.section-desc {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  white-space: nowrap;
+  line-height: 1;
+}
+.badge-blue   { background: #e8f0fe; color: #1a73e8; }
+.badge-gray   { background: #f5f5f5; color: #888; }
+.badge-green  { background: #e8f5e9; color: #2e7d32; }
+.badge-amber  { background: #fff8e1; color: #f57f17; }
+.badge-red    { background: #fce4ec; color: #c62828; }
+.badge-indigo { background: var(--indigo-bg); color: var(--indigo); }
+.badge-today  { background: rgba(239,68,68,.09); color: #ef4444; }
+.badge-sm     { font-size: 10px; padding: 2px 7px; }
+
+/* ── PROPS TABLE ── */
+.props-table-wrap {
+  margin: 16px 0 28px;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.props-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.props-table thead tr {
+  background: var(--gray-bg);
+}
+.props-table th, .props-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.props-table thead th {
+  font-weight: 700;
+  color: #444;
+}
+.props-table tbody tr:last-child td { border-bottom: none; }
+.props-table tbody tr:nth-child(even) td { background: #fafafa; }
+.prop-name { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--indigo); }
+.prop-type { font-family: 'JetBrains Mono', monospace; color: #e06c75; }
+.prop-default { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
+.prop-desc { color: #555; }
+
+/* ── SUB HEADER ── */
+.sub-header {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--indigo);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin: 28px 0 12px;
+}
+.sub-header:first-of-type { margin-top: 0; }
+
+/* ── CARD WRAPPER ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+.card-stack { display: flex; flex-direction: column; gap: 10px; }
+.card-divider { height: 1px; background: var(--divider); }
+
+/* ── PREVIEW BOX ── */
+.preview { width: 360px; margin-bottom: 0; }
+
+/* ── LIST ITEM ── */
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  gap: 12px;
+}
+.li-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 8px;
+  background: var(--gray-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.li-icon.sz44 { width: 44px; height: 44px; min-width: 44px; font-size: 22px; }
+.li-body { flex: 1; min-width: 0; }
+.li-label-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.li-label { font-weight: 500; font-size: 14px; color: var(--text-main); line-height: 1.3; }
+.li-desc  { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+.li-meta  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.li-text-link { font-size: 13px; font-weight: 700; color: var(--indigo); margin-top: 6px; display: block; border: none; background: none; cursor: pointer; font-family: inherit; padding: 0; }
+.li-action { display: flex; align-items: center; flex-shrink: 0; margin-top: 4px; }
+.li-arrow { font-size: 18px; color: #c7c7cc; }
+
+/* Toggle */
+.toggle-wrap { position: relative; width: 44px; height: 26px; }
+.toggle-input { opacity: 0; position: absolute; width: 0; height: 0; }
+.toggle-track {
+  display: block; width: 44px; height: 26px; border-radius: 999px;
+  background: #ddd; cursor: pointer; transition: background .2s;
+}
+.toggle-input:checked + .toggle-track { background: var(--indigo); }
+.toggle-knob {
+  position: absolute; top: 2px; left: 2px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  transition: transform .2s; pointer-events: none;
+}
+.toggle-input:checked ~ .toggle-knob { transform: translateX(18px); }
+
+/* ── CLASS CARD ── */
+.class-card { padding: 14px 16px; }
+.cc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.cc-info { flex: 1; min-width: 0; }
+.cc-time-row { display: flex; align-items: center; gap: 6px; }
+.cc-time { font-weight: 700; font-size: 16px; color: var(--text-main); }
+.cc-title { font-weight: 700; font-size: 14px; color: #333; margin-top: 4px; }
+.cc-sub { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+.cc-seats { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+.seats-green { font-weight: 700; color: #22c55e; }
+.seats-red   { font-weight: 700; color: #ef4444; }
+.cc-waiting  { font-size: 12px; font-weight: 700; color: #f59e0b; margin-top: 2px; }
+.cc-btn-available { background: var(--indigo); color: #fff; border: none; border-radius: var(--radius-btn); font-size: 13px; font-weight: 700; padding: 0 14px; height: 32px; cursor: pointer; flex-shrink: 0; margin-top: 4px; font-family: inherit; }
+.cc-btn-waitlist  { background: #fff8e1; color: #f59e0b; border: none; border-radius: var(--radius-btn); font-size: 13px; font-weight: 700; padding: 0 12px; height: 32px; cursor: pointer; flex-shrink: 0; margin-top: 4px; font-family: inherit; }
+.cc-btn-closed    { background: var(--gray-bg); color: #bbb; border: none; border-radius: var(--radius-btn); font-size: 13px; font-weight: 700; padding: 0 14px; height: 32px; flex-shrink: 0; margin-top: 4px; font-family: inherit; }
+
+/* ── APPLICATION CARD ── */
+.app-card { padding: 14px 16px; }
+.ac-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.ac-info { flex: 1; min-width: 0; }
+.ac-academy { font-size: 13px; color: var(--text-sub); }
+.ac-class   { font-weight: 700; font-size: 15px; color: var(--text-main); margin-top: 2px; }
+.ac-right   { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ac-more    { font-size: 20px; color: #aaa; border: none; background: none; cursor: pointer; padding: 0; line-height: 1; margin-bottom: 2px; }
+.ac-schedule { font-size: 13px; color: #555; margin-top: 8px; }
+.ac-cta-primary { display: block; width: 100%; margin-top: 12px; height: 36px; border-radius: var(--radius-btn); border: none; background: var(--indigo); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.ac-cta-ghost   { display: block; width: 100%; margin-top: 12px; height: 36px; border-radius: var(--radius-btn); border: none; background: var(--gray-bg); color: var(--indigo); font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+/* ── ACADEMY CARD ── */
+.academy-card { display: flex; align-items: center; padding: 16px; gap: 12px; }
+.acy-icon { width: 52px; height: 52px; border-radius: 12px; background: #f0f0f5; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.acy-body { flex: 1; min-width: 0; }
+.acy-cat   { font-weight: 700; font-size: 15px; color: var(--text-main); }
+.acy-name  { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+.acy-meta  { display: flex; gap: 16px; margin-top: 4px; }
+.acy-meta-item { font-size: 11px; }
+.acy-meta-label { color: var(--text-muted); }
+.acy-meta-val   { color: #555; font-weight: 500; }
+.acy-arrow { font-size: 16px; color: #c7c7cc; flex-shrink: 0; }
+
+/* ── SECTION CARD LABEL ── */
+.card-slot-label {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+}
+.card-slot-label span { font-weight: 700; font-size: 13px; color: var(--text-main); }
+
+/* ── ANNOTATION NOTE ── */
+.note {
+  font-size: 11px; color: var(--text-muted);
+  margin-top: -20px; margin-bottom: 24px;
+  padding: 8px 12px;
+  background: #fff;
+  border-left: 3px solid var(--indigo);
+  border-radius: 0 6px 6px 0;
+}
+.note code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--gray-bg);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ── MODE DEMO GRID ── */
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.mode-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: .05em; }
+
+/* ── TOKEN ROW ── */
+.token-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 24px;
+}
+.token-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: #fff; font-size: 11px;
+}
+.token-swatch { width: 12px; height: 12px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside>
+  <div class="sidebar-logo">Components</div>
+  <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+  <button class="nav-btn" onclick="showSection('cardslot')">CardSlot</button>
+  <button class="nav-btn" onclick="showSection('listitem')">ListItem</button>
+  <button class="nav-btn" onclick="showSection('classcard')">ClassCard</button>
+  <button class="nav-btn" onclick="showSection('appcard')">ApplicationCard</button>
+  <button class="nav-btn" onclick="showSection('academycard')">AcademyCard</button>
+</aside>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- ════════════ OVERVIEW ════════════ -->
+  <div id="overview" class="section visible">
+    <div class="section-header">
+      <span class="section-title">🎴 카드 / 리스트 컴포넌트</span>
+      <span class="badge badge-blue">스마트러닝앱 3차</span>
+    </div>
+    <p class="section-desc">
+      <code style="font-family:'JetBrains Mono',monospace;background:var(--gray-bg);padding:2px 6px;border-radius:4px;">CardSlot</code> 하나로 동일한 아이템을 <b>카드형</b>과 <b>리스트형</b> 두 가지 레이아웃으로 전환할 수 있습니다.
+    </p>
+
+    <!-- Token Colors -->
+    <p class="sub-header">Design Tokens — Status Colors</p>
+    <div class="token-row">
+      <div class="token-chip"><div class="token-swatch" style="background:#6366f1"></div> indigo / primary</div>
+      <div class="token-chip"><div class="token-swatch" style="background:#2e7d32"></div> green / 신청완료</div>
+      <div class="token-chip"><div class="token-swatch" style="background:#f57f17"></div> amber / 대기중</div>
+      <div class="token-chip"><div class="token-swatch" style="background:#c62828"></div> red / 취소됨</div>
+      <div class="token-chip"><div class="token-swatch" style="background:#1a73e8"></div> blue / 신규뱃지</div>
+      <div class="token-chip"><div class="token-swatch" style="background:#888"></div> gray / 기존뱃지</div>
+    </div>
+
+    <!-- mode demo -->
+    <p class="sub-header">CardSlot mode 비교</p>
+    <div class="mode-grid" style="max-width:760px">
+      <div>
+        <div class="mode-label">mode = "card" (독립 카드)</div>
+        <div class="card-stack preview">
+          <div class="card"><div class="class-card">
+            <div class="cc-top">
+              <div class="cc-info">
+                <div class="cc-time-row"><span class="cc-time">10:00</span><span class="badge badge-today" style="font-size:10px">오늘</span></div>
+                <div class="cc-title">수학 기초반 A</div>
+                <div class="cc-sub">강남 본원 · 개인 레슨 · 2026.04.05</div>
+                <div class="cc-seats">전체 8석 · 잔여 <span class="seats-green">3석</span></div>
+              </div>
+              <button class="cc-btn-available">담기</button>
+            </div>
+          </div></div>
+          <div class="card"><div class="class-card">
+            <div class="cc-top">
+              <div class="cc-info">
+                <div class="cc-time-row"><span class="cc-time">14:00</span></div>
+                <div class="cc-title">영어 회화 중급</div>
+                <div class="cc-sub">서초 지점 · 그룹 레슨 · 2026.04.05</div>
+                <div class="cc-seats">전체 12석 · 잔여 <span class="seats-red">1석</span></div>
+              </div>
+              <button class="cc-btn-available">담기</button>
+            </div>
+          </div></div>
+        </div>
+      </div>
+      <div>
+        <div class="mode-label">mode = "list" (그룹 리스트)</div>
+        <div class="card preview">
+          <div class="class-card">
+            <div class="cc-top">
+              <div class="cc-info">
+                <div class="cc-time-row"><span class="cc-time">10:00</span><span class="badge badge-today" style="font-size:10px">오늘</span></div>
+                <div class="cc-title">수학 기초반 A</div>
+                <div class="cc-sub">강남 본원 · 개인 레슨 · 2026.04.05</div>
+                <div class="cc-seats">전체 8석 · 잔여 <span class="seats-green">3석</span></div>
+              </div>
+              <button class="cc-btn-available">담기</button>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="class-card">
+            <div class="cc-top">
+              <div class="cc-info">
+                <div class="cc-time-row"><span class="cc-time">14:00</span></div>
+                <div class="cc-title">영어 회화 중급</div>
+                <div class="cc-sub">서초 지점 · 그룹 레슨 · 2026.04.05</div>
+                <div class="cc-seats">전체 12석 · 잔여 <span class="seats-red">1석</span></div>
+              </div>
+              <button class="cc-btn-available">담기</button>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="class-card">
+            <div class="cc-top">
+              <div class="cc-info">
+                <div class="cc-time-row"><span class="cc-time">09:00</span></div>
+                <div class="cc-title">과학 탐구반</div>
+                <div class="cc-sub">분당 지점 · 그룹 레슨 · 2026.04.07</div>
+                <div class="cc-seats">전체 15석 · 잔여 <span class="seats-red">0석</span></div>
+              </div>
+              <button class="cc-btn-closed" disabled>마감</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ CARD SLOT ════════════ -->
+  <div id="cardslot" class="section">
+    <div class="section-header">
+      <span class="section-title">CardSlot</span>
+      <span class="badge badge-gray badge-sm">Container</span>
+    </div>
+    <p class="section-desc">아이템을 카드형(독립) 또는 리스트형(그룹)으로 감싸는 컨테이너. <code style="font-family:'JetBrains Mono',monospace">mode</code> prop 하나로 레이아웃이 전환됩니다.</p>
+    <table class="props-table" style="border-radius:10px;border:1px solid var(--border);overflow:hidden;display:table">
+      <div class="props-table-wrap" style="margin:0">
+        <table class="props-table">
+          <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="prop-name">mode</td><td class="prop-type">"card" | "list"</td><td class="prop-default">"card"</td><td class="prop-desc">독립 카드 레이아웃 / 그룹 리스트 레이아웃</td></tr>
+            <tr><td class="prop-name">gap</td><td class="prop-type">number</td><td class="prop-default">10</td><td class="prop-desc">card 모드 아이템 간격 (px)</td></tr>
+            <tr><td class="prop-name">title</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">섹션 타이틀</td></tr>
+            <tr><td class="prop-name">badge</td><td class="prop-type">"신규" | "기존"</td><td class="prop-default">—</td><td class="prop-desc">타이틀 옆 뱃지</td></tr>
+            <tr><td class="prop-name">children</td><td class="prop-type">ReactNode</td><td class="prop-default">—</td><td class="prop-desc">아이템 목록 (ListItem, ClassCard 등)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </table>
+
+    <p class="sub-header">mode = "card" — 섹션 타이틀 + badge 포함</p>
+    <div class="preview">
+      <div class="card-slot-label"><span>ClassCard</span><span class="badge badge-blue badge-sm">신규</span></div>
+      <div class="card-stack">
+        <div class="card"><div class="class-card">
+          <div class="cc-top">
+            <div class="cc-info">
+              <div class="cc-time-row"><span class="cc-time">10:00</span><span class="badge badge-today" style="font-size:10px">오늘</span></div>
+              <div class="cc-title">수학 기초반 A</div>
+              <div class="cc-sub">강남 본원 · 개인 레슨 · 2026.04.05</div>
+              <div class="cc-seats">전체 8석 · 잔여 <span class="seats-green">3석</span></div>
+            </div>
+            <button class="cc-btn-available">담기</button>
+          </div>
+        </div></div>
+        <div class="card"><div class="class-card">
+          <div class="cc-top">
+            <div class="cc-info">
+              <div class="cc-time-row"><span class="cc-time">14:00</span></div>
+              <div class="cc-title">영어 회화 중급</div>
+              <div class="cc-sub">서초 지점 · 그룹 레슨 · 2026.04.05</div>
+              <div class="cc-seats">전체 12석 · 잔여 <span class="seats-red">1석</span></div>
+            </div>
+            <button class="cc-btn-available">담기</button>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <p class="sub-header">mode = "list" — 그룹 카드 + 자동 divider</p>
+    <div class="preview">
+      <div class="card-slot-label"><span>설정</span><span class="badge badge-blue badge-sm">신규</span></div>
+      <div class="card">
+        <div class="list-item">
+          <div class="li-icon">👤</div>
+          <div class="li-body"><div class="li-label-row"><span class="li-label">프로필 편집</span></div></div>
+          <div class="li-action"><span class="li-arrow">›</span></div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="list-item">
+          <div class="li-icon">🔔</div>
+          <div class="li-body">
+            <div class="li-label-row"><span class="li-label">알림 설정</span></div>
+            <div class="li-desc">수강 알림, 커뮤니티 알림</div>
+          </div>
+          <div class="li-action">
+            <label class="toggle-wrap">
+              <input type="checkbox" class="toggle-input" checked onchange="this.closest('.toggle-wrap').querySelector('.toggle-knob').style.transform = this.checked ? 'translateX(18px)' : 'none'; this.nextElementSibling.style.background = this.checked ? 'var(--indigo)' : '#ddd'">
+              <span class="toggle-track"></span>
+              <span class="toggle-knob" style="transform:translateX(18px)"></span>
+            </label>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="list-item">
+          <div class="li-icon">📎</div>
+          <div class="li-body">
+            <div class="li-label-row"><span class="li-label">첨부파일</span><span class="badge badge-green" style="font-size:10px;padding:2px 7px">신청완료</span></div>
+            <div class="li-desc">이미지 2개</div>
+            <button class="li-text-link">편집</button>
+          </div>
+          <div class="li-action"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ LIST ITEM ════════════ -->
+  <div id="listitem" class="section">
+    <div class="section-header">
+      <span class="section-title">ListItem</span>
+      <span class="badge badge-blue badge-sm">신규</span>
+    </div>
+    <p class="section-desc">설정·정보 목록의 단일 행. CardSlot mode="list" 안에서 사용하며, action prop으로 우측 인터랙션이 결정됩니다.</p>
+    <div class="props-table-wrap">
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">icon</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">이모지 또는 이미지 URL</td></tr>
+          <tr><td class="prop-name">iconType</td><td class="prop-type">"emoji" | "image"</td><td class="prop-default">"emoji"</td><td class="prop-desc">아이콘 렌더 방식</td></tr>
+          <tr><td class="prop-name">iconSize</td><td class="prop-type">number</td><td class="prop-default">36</td><td class="prop-desc">아이콘 컨테이너 크기 (px)</td></tr>
+          <tr><td class="prop-name">label</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">메인 라벨</td></tr>
+          <tr><td class="prop-name">description</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">서브 텍스트 (2번째 줄)</td></tr>
+          <tr><td class="prop-name">meta</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">추가 텍스트 (3번째 줄)</td></tr>
+          <tr><td class="prop-name">badge</td><td class="prop-type">{ text, color }</td><td class="prop-default">—</td><td class="prop-desc">라벨 옆 인라인 뱃지</td></tr>
+          <tr><td class="prop-name">action</td><td class="prop-type">"arrow" | "toggle" | "button" | "text-link"</td><td class="prop-default">"arrow"</td><td class="prop-desc">우측 액션 타입</td></tr>
+          <tr><td class="prop-name">actionProps</td><td class="prop-type">object</td><td class="prop-default">{}</td><td class="prop-desc">toggle: {checked,onChange} · button/text-link: {label}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="sub-header">action = "arrow"</p>
+    <div class="preview">
+      <div class="card">
+        <div class="list-item">
+          <div class="li-icon">👤</div>
+          <div class="li-body"><div class="li-label-row"><span class="li-label">프로필 편집</span></div></div>
+          <div class="li-action"><span class="li-arrow">›</span></div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="list-item">
+          <div class="li-icon">🏫</div>
+          <div class="li-body">
+            <div class="li-label-row"><span class="li-label">학원 정보</span></div>
+            <div class="li-desc">강남 프라임 학원</div>
+          </div>
+          <div class="li-action"><span class="li-arrow">›</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub-header">action = "toggle" (인터랙티브 ✓)</p>
+    <div class="preview">
+      <div class="card">
+        <div class="list-item">
+          <div class="li-icon">🔔</div>
+          <div class="li-body">
+            <div class="li-label-row"><span class="li-label">알림 설정</span></div>
+            <div class="li-desc">수강 알림, 커뮤니티 알림</div>
+          </div>
+          <div class="li-action">
+            <label class="toggle-wrap"><input type="checkbox" class="toggle-input" checked onchange="syncToggle(this)"><span class="toggle-track"></span><span class="toggle-knob" style="transform:translateX(18px)"></span></label>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="list-item">
+          <div class="li-icon">🌙</div>
+          <div class="li-body"><div class="li-label-row"><span class="li-label">다크모드</span></div></div>
+          <div class="li-action">
+            <label class="toggle-wrap"><input type="checkbox" class="toggle-input" onchange="syncToggle(this)"><span class="toggle-track"></span><span class="toggle-knob"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub-header">action = "text-link" + badge</p>
+    <div class="preview">
+      <div class="card">
+        <div class="list-item">
+          <div class="li-icon">📎</div>
+          <div class="li-body">
+            <div class="li-label-row"><span class="li-label">첨부파일</span><span class="badge badge-green" style="font-size:10px;padding:2px 7px">신청완료</span></div>
+            <div class="li-desc">이미지 2개</div>
+            <button class="li-text-link">편집</button>
+          </div>
+          <div class="li-action"></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub-header">iconSize = 44 · iconType = "emoji" (미디어형)</p>
+    <div class="preview">
+      <div class="card">
+        <div class="list-item">
+          <div class="li-icon sz44">🖼️</div>
+          <div class="li-body">
+            <div class="li-label-row"><span class="li-label">파이썬 기초 - 1강</span></div>
+            <div class="li-desc">자료구조 완전 정복</div>
+            <div class="li-meta">3시간 전</div>
+          </div>
+          <div class="li-action"><span class="li-arrow">›</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ CLASS CARD ════════════ -->
+  <div id="classcard" class="section">
+    <div class="section-header">
+      <span class="section-title">ClassCard</span>
+      <span class="badge badge-blue badge-sm">신규</span>
+    </div>
+    <p class="section-desc">수업 일정 카드. <code style="font-family:'JetBrains Mono',monospace">status</code> prop으로 우측 버튼 상태가 자동 결정됩니다. CardSlot의 card/list 양쪽 모드 모두 지원합니다.</p>
+    <div class="props-table-wrap">
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">time</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">수업 시작 시간</td></tr>
+          <tr><td class="prop-name">title</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">반 이름</td></tr>
+          <tr><td class="prop-name">location</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">지점명</td></tr>
+          <tr><td class="prop-name">lessonType</td><td class="prop-type">"개인 레슨" | "그룹 레슨"</td><td class="prop-default">—</td><td class="prop-desc">수업 유형</td></tr>
+          <tr><td class="prop-name">date</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">날짜 (YYYY.MM.DD)</td></tr>
+          <tr><td class="prop-name">totalSeats</td><td class="prop-type">number</td><td class="prop-default">—</td><td class="prop-desc">전체 정원</td></tr>
+          <tr><td class="prop-name">remainingSeats</td><td class="prop-type">number</td><td class="prop-default">—</td><td class="prop-desc">잔여석 (0이면 red)</td></tr>
+          <tr><td class="prop-name">waitingCount</td><td class="prop-type">number</td><td class="prop-default">—</td><td class="prop-desc">대기자 수 (선택)</td></tr>
+          <tr><td class="prop-name">myWaitingPos</td><td class="prop-type">number</td><td class="prop-default">—</td><td class="prop-desc">내 대기 순번 — ⏳ 텍스트 자동 표시 (선택)</td></tr>
+          <tr><td class="prop-name">isToday</td><td class="prop-type">boolean</td><td class="prop-default">false</td><td class="prop-desc">"오늘" 뱃지 표시</td></tr>
+          <tr><td class="prop-name">status</td><td class="prop-type">"available" | "waitlist" | "closed"</td><td class="prop-default">"available"</td><td class="prop-desc">신청 버튼 상태 결정</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="sub-header">status = "available" · isToday = true</p>
+    <div class="preview">
+      <div class="card"><div class="class-card">
+        <div class="cc-top">
+          <div class="cc-info">
+            <div class="cc-time-row"><span class="cc-time">10:00</span><span class="badge badge-today" style="font-size:10px">오늘</span></div>
+            <div class="cc-title">수학 기초반 A</div>
+            <div class="cc-sub">강남 본원 · 개인 레슨 · 2026.04.05</div>
+            <div class="cc-seats">전체 8석 · 잔여 <span class="seats-green">3석</span></div>
+          </div>
+          <button class="cc-btn-available">담기</button>
+        </div>
+      </div></div>
+    </div>
+
+    <p class="sub-header">status = "waitlist" · myWaitingPos = 3</p>
+    <div class="preview">
+      <div class="card"><div class="class-card">
+        <div class="cc-top">
+          <div class="cc-info">
+            <div class="cc-time-row"><span class="cc-time">16:30</span></div>
+            <div class="cc-title">수학 심화반 B</div>
+            <div class="cc-sub">강남 본원 · 그룹 레슨 · 2026.04.06</div>
+            <div class="cc-seats">전체 10석 · 잔여 <span class="seats-red">0석</span> · 대기 5명</div>
+            <div class="cc-waiting">⏳ 현재 대기 3번째</div>
+          </div>
+          <button class="cc-btn-waitlist">대기담기</button>
+        </div>
+      </div></div>
+    </div>
+
+    <p class="sub-header">status = "closed"</p>
+    <div class="preview">
+      <div class="card"><div class="class-card">
+        <div class="cc-top">
+          <div class="cc-info">
+            <div class="cc-time-row"><span class="cc-time">09:00</span></div>
+            <div class="cc-title">과학 탐구반</div>
+            <div class="cc-sub">분당 지점 · 그룹 레슨 · 2026.04.07</div>
+            <div class="cc-seats">전체 15석 · 잔여 <span class="seats-red">0석</span></div>
+          </div>
+          <button class="cc-btn-closed" disabled>마감</button>
+        </div>
+      </div></div>
+    </div>
+
+    <p class="sub-header">mode = "list" 조합 예시</p>
+    <div class="preview">
+      <div class="card">
+        <div class="class-card">
+          <div class="cc-top">
+            <div class="cc-info">
+              <div class="cc-time-row"><span class="cc-time">10:00</span><span class="badge badge-today" style="font-size:10px">오늘</span></div>
+              <div class="cc-title">수학 기초반 A</div>
+              <div class="cc-sub">강남 본원 · 개인 레슨 · 2026.04.05</div>
+              <div class="cc-seats">전체 8석 · 잔여 <span class="seats-green">3석</span></div>
+            </div>
+            <button class="cc-btn-available">담기</button>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="class-card">
+          <div class="cc-top">
+            <div class="cc-info">
+              <div class="cc-time-row"><span class="cc-time">14:00</span></div>
+              <div class="cc-title">영어 회화 중급</div>
+              <div class="cc-sub">서초 지점 · 그룹 레슨 · 2026.04.05</div>
+              <div class="cc-seats">전체 12석 · 잔여 <span class="seats-red">1석</span></div>
+            </div>
+            <button class="cc-btn-available">담기</button>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="class-card">
+          <div class="cc-top">
+            <div class="cc-info">
+              <div class="cc-time-row"><span class="cc-time">09:00</span></div>
+              <div class="cc-title">과학 탐구반</div>
+              <div class="cc-sub">분당 지점 · 그룹 레슨 · 2026.04.07</div>
+              <div class="cc-seats">전체 15석 · 잔여 <span class="seats-red">0석</span></div>
+            </div>
+            <button class="cc-btn-closed" disabled>마감</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ APPLICATION CARD ════════════ -->
+  <div id="appcard" class="section">
+    <div class="section-header">
+      <span class="section-title">ApplicationCard</span>
+      <span class="badge badge-blue badge-sm">신규</span>
+    </div>
+    <p class="section-desc">수강 신청 현황 카드. <code style="font-family:'JetBrains Mono',monospace">status</code>로 뱃지 색상이 자동 결정됩니다. <code style="font-family:'JetBrains Mono',monospace">ctaLabel</code>이 없으면 버튼을 숨깁니다.</p>
+    <div class="props-table-wrap">
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">academyName</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">학원명</td></tr>
+          <tr><td class="prop-name">className</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">수업명</td></tr>
+          <tr><td class="prop-name">schedule</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">일정 텍스트 (📅 아이콘 자동 삽입)</td></tr>
+          <tr><td class="prop-name">status</td><td class="prop-type">"신청완료" | "대기중" | "취소됨"</td><td class="prop-default">—</td><td class="prop-desc">상태 뱃지 색상 자동 결정</td></tr>
+          <tr><td class="prop-name">showMoreMenu</td><td class="prop-type">boolean</td><td class="prop-default">true</td><td class="prop-desc">⋯ 더보기 버튼 (취소됨 상태는 자동 숨김)</td></tr>
+          <tr><td class="prop-name">ctaLabel</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">하단 버튼 텍스트 (없으면 버튼 숨김)</td></tr>
+          <tr><td class="prop-name">ctaVariant</td><td class="prop-type">"primary" | "ghost"</td><td class="prop-default">"primary"</td><td class="prop-desc">버튼 색상 스타일</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="sub-header">status = "신청완료" · ctaLabel 있음</p>
+    <div class="preview">
+      <div class="card"><div class="app-card">
+        <div class="ac-top">
+          <div class="ac-info"><div class="ac-academy">강남 프라임 학원</div><div class="ac-class">수학 기초반 A (그룹 레슨)</div></div>
+          <div class="ac-right"><span class="badge badge-green" style="font-size:10px;padding:2px 7px">신청완료</span><button class="ac-more">⋯</button></div>
+        </div>
+        <div class="ac-schedule">📅 2026.04.05 ~ 2026.06.28 · 매주 월·수</div>
+        <button class="ac-cta-primary">수업 상세 보기</button>
+      </div></div>
+    </div>
+
+    <p class="sub-header">status = "대기중" · ctaVariant = "primary"</p>
+    <div class="preview">
+      <div class="card"><div class="app-card">
+        <div class="ac-top">
+          <div class="ac-info"><div class="ac-academy">서초 영어 아카데미</div><div class="ac-class">영어 회화 중급반</div></div>
+          <div class="ac-right"><span class="badge badge-amber" style="font-size:10px;padding:2px 7px">대기중</span><button class="ac-more">⋯</button></div>
+        </div>
+        <div class="ac-schedule">📅 2026.04.10 · 14:00</div>
+        <button class="ac-cta-primary">대기 취소</button>
+      </div></div>
+    </div>
+
+    <p class="sub-header">status = "취소됨" · ctaLabel 없음 (버튼 + ⋯ 숨김)</p>
+    <div class="preview">
+      <div class="card"><div class="app-card">
+        <div class="ac-top">
+          <div class="ac-info"><div class="ac-academy">분당 코딩 학원</div><div class="ac-class">파이썬 기초반</div></div>
+          <div class="ac-right"><span class="badge badge-red" style="font-size:10px;padding:2px 7px">취소됨</span></div>
+        </div>
+        <div class="ac-schedule">📅 2026.03.01 ~ 2026.03.31</div>
+      </div></div>
+    </div>
+
+    <p class="sub-header">3종 전체 리스트 조합</p>
+    <div class="preview card-stack">
+      <div class="card"><div class="app-card">
+        <div class="ac-top"><div class="ac-info"><div class="ac-academy">강남 프라임 학원</div><div class="ac-class">수학 기초반 A (그룹 레슨)</div></div>
+        <div class="ac-right"><span class="badge badge-green" style="font-size:10px;padding:2px 7px">신청완료</span><button class="ac-more">⋯</button></div></div>
+        <div class="ac-schedule">📅 2026.04.05 ~ 2026.06.28 · 매주 월·수</div>
+        <button class="ac-cta-primary">수업 상세 보기</button>
+      </div></div>
+      <div class="card"><div class="app-card">
+        <div class="ac-top"><div class="ac-info"><div class="ac-academy">서초 영어 아카데미</div><div class="ac-class">영어 회화 중급반</div></div>
+        <div class="ac-right"><span class="badge badge-amber" style="font-size:10px;padding:2px 7px">대기중</span><button class="ac-more">⋯</button></div></div>
+        <div class="ac-schedule">📅 2026.04.10 · 14:00</div>
+        <button class="ac-cta-primary">대기 취소</button>
+      </div></div>
+      <div class="card"><div class="app-card">
+        <div class="ac-top"><div class="ac-info"><div class="ac-academy">분당 코딩 학원</div><div class="ac-class">파이썬 기초반</div></div>
+        <div class="ac-right"><span class="badge badge-red" style="font-size:10px;padding:2px 7px">취소됨</span></div></div>
+        <div class="ac-schedule">📅 2026.03.01 ~ 2026.03.31</div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════════ ACADEMY CARD ════════════ -->
+  <div id="academycard" class="section">
+    <div class="section-header">
+      <span class="section-title">AcademyCard</span>
+      <span class="badge badge-blue badge-sm">신규</span>
+    </div>
+    <p class="section-desc">등록된 학원 목록 행. 항상 arrow 액션을 사용하며, CardSlot mode="list" 안에서 사용합니다.</p>
+    <div class="props-table-wrap">
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">icon</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">이모지 아이콘</td></tr>
+          <tr><td class="prop-name">category</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">과목 카테고리 (예: IT 계열 · 코딩)</td></tr>
+          <tr><td class="prop-name">academyName</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">학원명 + 지점명</td></tr>
+          <tr><td class="prop-name">registeredDate</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">등록일 (YYYY.MM.DD)</td></tr>
+          <tr><td class="prop-name">applicationNumber</td><td class="prop-type">string</td><td class="prop-default">—</td><td class="prop-desc">원서번호</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="sub-header">단독 카드</p>
+    <div class="preview">
+      <div class="card">
+        <div class="academy-card">
+          <div class="acy-icon">🏫</div>
+          <div class="acy-body">
+            <div class="acy-cat">IT 계열 · 코딩</div>
+            <div class="acy-name">강남 프라임 학원 강남 본원</div>
+            <div class="acy-meta">
+              <span class="acy-meta-item"><span class="acy-meta-label">등록일 </span><span class="acy-meta-val">2024.09.01</span></span>
+              <span class="acy-meta-item"><span class="acy-meta-label">원서번호 </span><span class="acy-meta-val">A2024-00291</span></span>
+            </div>
+          </div>
+          <span class="acy-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub-header">mode = "list" 2개 그룹</p>
+    <div class="preview">
+      <div class="card">
+        <div class="academy-card">
+          <div class="acy-icon">🏫</div>
+          <div class="acy-body">
+            <div class="acy-cat">IT 계열 · 코딩</div>
+            <div class="acy-name">강남 프라임 학원 강남 본원</div>
+            <div class="acy-meta">
+              <span class="acy-meta-item"><span class="acy-meta-label">등록일 </span><span class="acy-meta-val">2024.09.01</span></span>
+              <span class="acy-meta-item"><span class="acy-meta-label">원서번호 </span><span class="acy-meta-val">A2024-00291</span></span>
+            </div>
+          </div>
+          <span class="acy-arrow">›</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="academy-card">
+          <div class="acy-icon">📚</div>
+          <div class="acy-body">
+            <div class="acy-cat">수학 / 과학</div>
+            <div class="acy-name">분당 영재 아카데미 분당 본원</div>
+            <div class="acy-meta">
+              <span class="acy-meta-item"><span class="acy-meta-label">등록일 </span><span class="acy-meta-val">2023.03.15</span></span>
+              <span class="acy-meta-item"><span class="acy-meta-label">원서번호 </span><span class="acy-meta-val">A2023-00134</span></span>
+            </div>
+          </div>
+          <span class="acy-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function syncToggle(input) {
+  const wrap = input.closest('.toggle-wrap');
+  const track = wrap.querySelector('.toggle-track');
+  const knob = wrap.querySelector('.toggle-knob');
+  track.style.background = input.checked ? 'var(--indigo)' : '#ddd';
+  knob.style.transform = input.checked ? 'translateX(18px)' : 'translateX(0)';
+}
+
+// init all toggles
+document.querySelectorAll('.toggle-input').forEach(input => syncToggle(input));
+</script>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자격증 접수 안내 + 기출문제 — UX 분석 리포트</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #f5f5f7; color: #1d1d1f; font-size: 14px; line-height: 1.7; }
+
+  .cover { background: #1d1d1f; color: white; padding: 60px 48px; }
+  .cover h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .cover .sub { font-size: 14px; color: #999; }
+  .cover .meta { margin-top: 24px; display: flex; gap: 24px; }
+  .cover .meta span { font-size: 13px; color: #aaa; }
+  .cover .meta strong { color: white; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Section */
+  .section { margin-bottom: 48px; }
+  .section-title { font-size: 20px; font-weight: 700; color: #1d1d1f; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #1d1d1f; display: flex; align-items: center; gap: 8px; }
+  .section-title .num { background: #1d1d1f; color: white; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+
+  /* Cards */
+  .card { background: white; border-radius: 12px; border: 1px solid #e5e5e7; margin-bottom: 12px; overflow: hidden; }
+  .card-head { padding: 16px 20px; display: flex; align-items: flex-start; gap: 12px; }
+  .card-head .tag { flex-shrink: 0; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .tag-miss { background: #fff0f0; color: #c00; }
+  .tag-ux { background: #e8f4ff; color: #0070f3; }
+  .tag-suggest { background: #f0f7ff; color: #0060cc; }
+  .card-head h3 { font-size: 14px; font-weight: 700; color: #1d1d1f; margin-bottom: 4px; }
+  .card-head p { font-size: 13px; color: #444; line-height: 1.6; }
+  .card-propose { background: #fafafa; border-top: 1px solid #f0f0f0; padding: 12px 20px 12px 52px; font-size: 12px; color: #555; }
+  .card-propose strong { color: #0060cc; font-weight: 600; }
+
+  /* Component blocks */
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .comp-grid { grid-template-columns: 1fr; } }
+
+  .comp-card { background: white; border-radius: 12px; border: 1px solid #e5e5e7; padding: 16px 18px; }
+  .comp-card.merge { border-color: #f0a500; background: #fffbf0; }
+  .comp-card.new { border-color: #0070f3; background: #f0f8ff; }
+  .comp-card.existing { border-color: #e5e5e7; }
+
+  .comp-label { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+  .comp-label.lbl-merge { color: #c07800; }
+  .comp-label.lbl-new { color: #0060cc; }
+  .comp-label.lbl-existing { color: #888; }
+
+  .comp-name { font-size: 15px; font-weight: 700; color: #1d1d1f; margin-bottom: 2px; }
+  .comp-name .ko { font-size: 12px; font-weight: 400; color: #888; margin-left: 4px; }
+  .comp-desc { font-size: 12px; color: #555; line-height: 1.6; margin-top: 6px; }
+  .comp-desc code { background: #f3f3f3; border-radius: 4px; padding: 1px 4px; font-family: monospace; font-size: 11px; color: #333; }
+  .comp-props { margin-top: 10px; font-size: 12px; color: #333; }
+  .comp-props .prop { padding: 4px 0; border-bottom: 1px solid #f0f0f0; display: flex; gap: 8px; }
+  .comp-props .prop:last-child { border-bottom: none; }
+  .prop-key { color: #888; min-width: 90px; flex-shrink: 0; }
+  .prop-val { color: #333; }
+
+  .merge-from { margin-top: 10px; padding: 8px 10px; background: #fff3cd; border-radius: 6px; font-size: 11px; color: #856404; }
+  .merge-from strong { font-weight: 600; }
+
+  /* Checklist */
+  .checklist { background: white; border-radius: 12px; border: 1px solid #e5e5e7; overflow: hidden; }
+  .checklist-item { padding: 14px 20px; display: flex; align-items: flex-start; gap: 12px; border-bottom: 1px solid #f5f5f5; }
+  .checklist-item:last-child { border-bottom: none; }
+  .check-num { background: #f5f5f7; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #555; flex-shrink: 0; margin-top: 1px; }
+  .check-content h4 { font-size: 13px; font-weight: 600; color: #1d1d1f; margin-bottom: 3px; }
+  .check-content p { font-size: 12px; color: #666; }
+
+  /* Divider */
+  .divider-label { font-size: 11px; font-weight: 700; color: #aaa; letter-spacing: 0.08em; text-transform: uppercase; margin: 24px 0 12px; }
+
+  /* Notice box */
+  .notice { background: #f0f7ff; border: 1px solid #c0dcff; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; font-size: 13px; color: #004499; line-height: 1.6; }
+  .notice strong { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>자격증 접수 안내 + 기출문제<br>UX 분석 리포트</h1>
+  <div class="sub">스마트러닝앱 2차 · 플로우 다이어그램 & 화면설계서 비교</div>
+  <div class="meta">
+    <span><strong>분석 대상</strong> 자격증 접수 안내 / 기출문제 플로우</span>
+    <span><strong>작성일</strong> 2026.03.30</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ================================ -->
+  <!-- SECTION 1: 누락된 화면 -->
+  <!-- ================================ -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> 누락된 화면</div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-miss">누락</span>
+        <div>
+          <h3>자격증 접수 안내 — 외부 링크 진입 화면</h3>
+          <p>"사이트 방문하기" 클릭 후 연결 방식(인앱 웹뷰 vs. 외부 브라우저) 미설계. 인앱 웹뷰 선택 시 TopBar(닫기/뒤로가기) 포함 화면 별도 필요.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-miss">누락</span>
+        <div>
+          <h3>기출문제 — Empty State 화면</h3>
+          <p>특정 자격증 기출문제 미존재 시 빈 상태 화면 미설계. 플로우 다이어그램에도 해당 분기 누락.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-miss">누락</span>
+        <div>
+          <h3>기출문제 풀기 — 중간 이탈 확인 화면</h3>
+          <p>플로우에 이탈 케이스 언급 있으나 이탈 확인 모달 화면 미설계. 타이머 구조상 이탈 시 처리 방식 정의 필요.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-miss">누락</span>
+        <div>
+          <h3>자격증 삭제 — 확인 모달</h3>
+          <p>삭제하기 버튼 설계됨. 삭제 전 확인 모달 미설계로 탭 즉시 삭제 실행됨.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-miss">누락</span>
+        <div>
+          <h3>채점 결과 — 재응시 플로우</h3>
+          <p>결과 화면 이후 재응시 CTA 및 연결 플로우 미정의. "해설 보기" 외 다음 액션 없음.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-miss">누락</span>
+        <div>
+          <h3>비로그인 → 로그인 완료 후 복귀 플로우</h3>
+          <p>비로그인 → 로그인 유도 바텀시트 케이스 있으나, 로그인 완료 후 복귀 화면 미정의로 플로우 단절.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+  <!-- SECTION 2: UX 개선 제안 -->
+  <!-- ================================ -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> UX 개선 제안</div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-ux">UX</span>
+        <div>
+          <h3>문제 네비게이션 — 진행 바 + 문항 점프 제안</h3>
+          <p>이전/다음 버튼만 제공, 특정 문항 점프 방법 없음. 진행 바 및 문항 인덱스 점프 기능 추가 제안.</p>
+        </div>
+      </div>
+      <div class="card-propose"><strong>제안 :</strong> 상단에 <code>ProgressBar</code>(현재 문항 / 전체) 노출. 탭 시 문항 목록 오버레이 표시.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-ux">UX</span>
+        <div>
+          <h3>자격증 접수 안내 — 상태 배지 미분리</h3>
+          <p>목록 아이템에 접수 상태 시각 구분 없음. 마감 자격증에도 버튼 동일 노출되어 혼란 발생 가능.</p>
+        </div>
+      </div>
+      <div class="card-propose"><strong>제안 :</strong> 기존 <code>StatusBadge</code>에 접수중 / 접수예정 / 접수마감 타입 추가. 마감 상태에서는 버튼 비활성 처리.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-ux">UX</span>
+        <div>
+          <h3>자격증 선택 모달 — 미선택 시 버튼 제어 미정의</h3>
+          <p>선택 안내 문구 있으나, 미선택 시 확인 버튼 처리(비활성/토스트) 설계서에 미명시.</p>
+        </div>
+      </div>
+      <div class="card-propose"><strong>제안 :</strong> 미선택 시 확인 버튼 비활성(disabled) 처리. 선택 즉시 버튼 활성화.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-ux">UX</span>
+        <div>
+          <h3>기출문제 목록 — 응시 이력에 따른 버튼 분기 불명확</h3>
+          <p>버튼 1개(full width)와 2개 구조 혼재. 분기 조건 설계서에 미명시.</p>
+        </div>
+      </div>
+      <div class="card-propose"><strong>제안 :</strong> 최초 응시 → "기출문제 풀기" 1개(full width). 응시 이력 있음 → "기출문제 풀기" + "해설 보기" 2버튼으로 명시.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag tag-ux">UX</span>
+        <div>
+          <h3>타이머 — 백그라운드 전환 시 동작 규칙 미정의</h3>
+          <p>백그라운드 전환·화면 잠금·이탈 모달 노출 중 타이머 동작 정책 미정의. 시험 타이머는 정책 정의 필수.</p>
+        </div>
+      </div>
+      <div class="card-propose"><strong>제안 :</strong> 백그라운드 전환 시 타이머 계속 진행(카운트). 이탈 확인 모달 노출 시는 일시정지.</div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+  <!-- SECTION 3: 기획 제안 사항 -->
+  <!-- ================================ -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> 기획 제안 사항</div>
+    <div class="notice"><strong>디자인 진행 전 확정이 필요한 항목.</strong> 사전 결정 시 수정 리스크 최소화.</div>
+
+    <div class="checklist">
+      <div class="checklist-item">
+        <span class="check-num">1</span>
+        <div class="check-content">
+          <h4>외부 사이트 연결 방식</h4>
+          <p>인앱 웹뷰 vs. 외부 브라우저 확정 필요. 인앱 웹뷰 선택 시 TopBar 포함 화면 추가 설계.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">2</span>
+        <div class="check-content">
+          <h4>자격증 접수 상태값 정의</h4>
+          <p>접수중 / 접수예정 / 접수마감 상태별 버튼 노출 규칙 확정 필요.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">3</span>
+        <div class="check-content">
+          <h4>기출문제 없을 때 Empty State 문구</h4>
+          <p>기출문제 미존재 시 노출 문구 및 CTA 버튼 여부 확정 필요.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">4</span>
+        <div class="check-content">
+          <h4>풀이 중 이탈 시 타이머 처리 정책</h4>
+          <p>이탈 모달 노출 중 일시정지 여부, 백그라운드 전환 시 계속 진행 여부 확정 필요.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">5</span>
+        <div class="check-content">
+          <h4>재응시 정책</h4>
+          <p>재응시 허용 여부, 허용 시 횟수·시간 제한 정책 확정 필요.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">6</span>
+        <div class="check-content">
+          <h4>비로그인 → 로그인 후 복귀 플로우</h4>
+          <p>로그인 완료 후 기출문제 화면 직접 복귀(딥링크) 여부 확정 필요.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">7</span>
+        <div class="check-content">
+          <h4>자격증 삭제 확인 모달 문구</h4>
+          <p>삭제 확인 모달 노출 여부 및 문구 확정 필요.</p>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <span class="check-num">8</span>
+        <div class="check-content">
+          <h4>문항 점프 네비게이션 허용 여부</h4>
+          <p>풀이 중 특정 문항 점프 기능 허용 여부 확정 필요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+  <!-- SECTION 4: 컴포넌트 정리 -->
+  <!-- ================================ -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> 컴포넌트 정리</div>
+
+    <!-- 합칠 수 있는 것들 -->
+    <div class="divider-label">🔀 기존 컴포넌트 — 합칠 수 있는 것</div>
+
+    <div class="comp-grid">
+
+      <div class="comp-card merge">
+        <div class="comp-label lbl-merge">병합 제안</div>
+        <div class="comp-name">Stepper <span class="ko">단계 표시</span></div>
+        <div class="merge-from"><strong>병합 대상 :</strong> StepIndicator + ProgressStepper<br>두 컴포넌트가 동일한 구조(단계 목록 + 현재 단계 + 상태)로, variant로 분리 가능.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">variant</span><span class="prop-val">mentoring / generic</span></div>
+          <div class="prop"><span class="prop-key">단계 목록</span><span class="prop-val">문자열 배열</span></div>
+          <div class="prop"><span class="prop-key">현재 단계</span><span class="prop-val">숫자</span></div>
+          <div class="prop"><span class="prop-key">날짜 표시</span><span class="prop-val">있음 / 없음 (mentoring 타입만)</span></div>
+          <div class="prop"><span class="prop-key">상태</span><span class="prop-val">완료 / 진행 중 / 대기</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card merge">
+        <div class="comp-label lbl-merge">병합 제안</div>
+        <div class="comp-name">SelectField <span class="ko">선택 입력</span></div>
+        <div class="merge-from"><strong>병합 대상 :</strong> SelectBox + Dropdown<br>SelectBox는 폼용, Dropdown은 inline용이나 구조가 동일. variant로 통합 가능.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">variant</span><span class="prop-val">form / inline</span></div>
+          <div class="prop"><span class="prop-key">라벨</span><span class="prop-val">문자열 (form 타입만)</span></div>
+          <div class="prop"><span class="prop-key">옵션 목록</span><span class="prop-val">문자열 배열</span></div>
+          <div class="prop"><span class="prop-key">선택값</span><span class="prop-val">문자열</span></div>
+          <div class="prop"><span class="prop-key">상태</span><span class="prop-val">기본 / 선택됨 / 비활성</span></div>
+          <div class="prop"><span class="prop-key">placeholder</span><span class="prop-val">문자열</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card merge">
+        <div class="comp-label lbl-merge">병합 제안</div>
+        <div class="comp-name">Attachment <span class="ko">첨부</span></div>
+        <div class="merge-from"><strong>병합 대상 :</strong> ImageAttachment + FileAttachment<br>첨부 컴포넌트로 같은 역할. type prop으로 UI만 분기.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">type</span><span class="prop-val">image / file</span></div>
+          <div class="prop"><span class="prop-key">최대 개수</span><span class="prop-val">숫자 (image 타입)</span></div>
+          <div class="prop"><span class="prop-key">최대 용량</span><span class="prop-val">숫자 MB</span></div>
+          <div class="prop"><span class="prop-key">파일명</span><span class="prop-val">문자열 (file 타입)</span></div>
+          <div class="prop"><span class="prop-key">확장자</span><span class="prop-val">문자열 (file 타입)</span></div>
+          <div class="prop"><span class="prop-key">상태</span><span class="prop-val">기본 / 업로드중 / 완료 / 에러 / 다운로드가능 / 실패</span></div>
+          <div class="prop"><span class="prop-key">삭제 버튼</span><span class="prop-val">있음 / 없음</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card merge">
+        <div class="comp-label lbl-merge">중복 제거</div>
+        <div class="comp-name">GlobalHeader <span class="ko">상단 헤더</span></div>
+        <div class="merge-from"><strong>중복 제거 :</strong> 피그마에 동일한 컴포넌트가 2개 존재 (노드 1579:13427, 1579:13437). 내용 완전 동일 → 1개만 유지.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">로고 클릭</span><span class="prop-val">있음 / 없음</span></div>
+          <div class="prop"><span class="prop-key">알림 아이콘</span><span class="prop-val">노출 / 비노출</span></div>
+          <div class="prop"><span class="prop-key">알림 뱃지</span><span class="prop-val">노출 / 비노출</span></div>
+          <div class="prop"><span class="prop-key">전체메뉴 아이콘</span><span class="prop-val">노출 / 비노출</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 새로 추가할 컴포넌트 -->
+    <div class="divider-label" style="margin-top:32px;">✨ 이번 화면에서 새로 추가할 컴포넌트</div>
+
+    <div class="comp-grid">
+
+      <div class="comp-card new">
+        <div class="comp-label lbl-new">신규 추가</div>
+        <div class="comp-name">CertificationNoticeItem <span class="ko">자격증 접수 안내 아이템</span></div>
+        <div class="comp-desc">자격증 접수 안내 목록에 사용되는 리스트 아이템. 기존 컴포넌트 중 이 패턴을 커버하는 것이 없음.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">상태</span><span class="prop-val">접수중 / 접수예정 / 접수마감</span></div>
+          <div class="prop"><span class="prop-key">제목</span><span class="prop-val">문자열</span></div>
+          <div class="prop"><span class="prop-key">자세히 보기 버튼</span><span class="prop-val">노출 / 비노출</span></div>
+          <div class="prop"><span class="prop-key">사이트 방문 버튼</span><span class="prop-val">노출 / 비노출</span></div>
+          <div class="prop"><span class="prop-key">버튼 비활성</span><span class="prop-val">접수마감 시 자동 비활성</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card new">
+        <div class="comp-label lbl-new">신규 추가</div>
+        <div class="comp-name">ExamListItem <span class="ko">기출문제 목록 아이템</span></div>
+        <div class="comp-desc">기출문제 풀기 목록에 사용되는 자격증 아이템. 응시 이력 여부에 따라 버튼 구성이 달라지는 점이 기존 컴포넌트와 다름.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">자격증명</span><span class="prop-val">문자열</span></div>
+          <div class="prop"><span class="prop-key">응시 이력</span><span class="prop-val">없음 / 있음</span></div>
+          <div class="prop"><span class="prop-key">버튼 구성</span><span class="prop-val">없음 → 1개(full width) / 있음 → 2개</span></div>
+          <div class="prop"><span class="prop-key">삭제하기</span><span class="prop-val">있음 / 없음 (로그인 사용자만)</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card new">
+        <div class="comp-label lbl-new">신규 추가</div>
+        <div class="comp-name">QuizQuestionView <span class="ko">기출문제 풀기 화면</span></div>
+        <div class="comp-desc">RadioButton을 사용하지만 타이머, 문제 번호, 이전/다음 네비게이션을 포함한 상위 컴포넌트. 해설 모드 시 정답/오답 상태도 처리.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">문제 번호</span><span class="prop-val">숫자 / 전체 문항 수</span></div>
+          <div class="prop"><span class="prop-key">경과 시간</span><span class="prop-val">MM:SS</span></div>
+          <div class="prop"><span class="prop-key">모드</span><span class="prop-val">풀이 / 해설</span></div>
+          <div class="prop"><span class="prop-key">문항 보기</span><span class="prop-val">라디오버튼 리스트 (최대 4개)</span></div>
+          <div class="prop"><span class="prop-key">선택 상태</span><span class="prop-val">미선택 / 선택됨 / 정답 / 오답 (해설 모드)</span></div>
+          <div class="prop"><span class="prop-key">이전 버튼</span><span class="prop-val">1번 문항 시 비활성</span></div>
+          <div class="prop"><span class="prop-key">다음 버튼</span><span class="prop-val">마지막 문항 시 "제출하기"로 변경</span></div>
+          <div class="prop"><span class="prop-key">진행 바</span><span class="prop-val">현재 문항 / 전체 (ProgressBar 재사용)</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card new">
+        <div class="comp-label lbl-new">신규 추가</div>
+        <div class="comp-name">QuizResultView <span class="ko">채점 결과 화면</span></div>
+        <div class="comp-desc">기출문제 채점 후 결과를 표시하는 화면. 경과 시간, 정답 개수, 합격 여부 및 후속 액션 버튼 포함.</div>
+        <div class="comp-props">
+          <div class="prop"><span class="prop-key">경과 시간</span><span class="prop-val">MM:SS</span></div>
+          <div class="prop"><span class="prop-key">정답 개수</span><span class="prop-val">숫자 / 전체 문항 수</span></div>
+          <div class="prop"><span class="prop-key">합격 여부</span><span class="prop-val">합격 / 불합격 (기획 확인 필요)</span></div>
+          <div class="prop"><span class="prop-key">해설 보기 버튼</span><span class="prop-val">항상 노출</span></div>
+          <div class="prop"><span class="prop-key">다시 풀기 버튼</span><span class="prop-val">노출 / 비노출 (재응시 정책 결정 후)</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 기존 컴포넌트로 대응 가능한 것들 -->
+    <div class="divider-label" style="margin-top:32px;">✅ 기존 컴포넌트로 대응 가능 (신규 불필요)</div>
+
+    <div class="comp-grid">
+      <div class="comp-card existing">
+        <div class="comp-label lbl-existing">기존 활용</div>
+        <div class="comp-name">Modal <span class="ko">확인 팝업</span></div>
+        <div class="comp-desc">이탈 확인 모달, 자격증 삭제 확인 모달 모두 기존 <code>Modal</code> 컴포넌트(경고 타입 + 위험 버튼 스타일)로 처리 가능.</div>
+      </div>
+      <div class="comp-card existing">
+        <div class="comp-label lbl-existing">기존 활용</div>
+        <div class="comp-name">BottomSheet <span class="ko">바텀시트</span></div>
+        <div class="comp-desc">비로그인 유도는 기존 <code>BottomSheet</code>의 <code>로그인유도</code> 타입으로 처리 가능. <code>redirect_to</code> 파라미터로 복귀 URL 전달.</div>
+      </div>
+      <div class="comp-card existing">
+        <div class="comp-label lbl-existing">기존 활용</div>
+        <div class="comp-name">ProgressBar <span class="ko">진도율 바</span></div>
+        <div class="comp-desc">QuizQuestionView 내 문항 진행 바로 <code>ProgressBar</code> 재사용 가능. 퍼센트 표시는 비노출로 설정.</div>
+      </div>
+      <div class="comp-card existing">
+        <div class="comp-label lbl-existing">기존 활용</div>
+        <div class="comp-name">StatusBadge <span class="ko">상태 뱃지</span></div>
+        <div class="comp-desc">자격증 접수 상태 표시에 <code>StatusBadge</code> 재사용. 기존 타입에 <code>접수중 / 접수예정 / 접수마감</code> 추가 필요.</div>
+      </div>
+      <div class="comp-card existing">
+        <div class="comp-label lbl-existing">기존 활용</div>
+        <div class="comp-name">EmptyState <span class="ko">빈 상태</span></div>
+        <div class="comp-desc">기출문제 없음 상태에 기존 <code>EmptyState</code> 컴포넌트 그대로 사용 가능.</div>
+      </div>
+      <div class="comp-card existing">
+        <div class="comp-label lbl-existing">기존 활용</div>
+        <div class="comp-name">RadioButton <span class="ko">라디오 버튼</span></div>
+        <div class="comp-desc">QuizQuestionView 내 문항 선택에 기존 <code>RadioButton</code> 컴포넌트 재사용. 해설 모드 상태(정답/오답)만 추가.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

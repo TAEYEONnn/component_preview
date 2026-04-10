@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>화면 설계서 — 스마트러닝앱 리뉴얼</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:        #2B2D55;
+      --navy-text:   #FFFFFF;
+      --badge-red:   #FF2D55;
+      --value-text:  #626262;
+      --dim-text:    #828282;
+      --body-text:   #444444;
+      --sub-text:    #555555;
+      --section-bg:  #F8F8FA;
+      --page-bg:     #F8F8FA;
+      --border:      #D8D8DC;
+      --border-light:#EBEBEF;
+      --font:        'Pretendard', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: #C8C8CC;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 32px;
+      gap: 40px;
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       SPEC PAGE WRAPPER
+    ============================================================ */
+    .spec-page {
+      width: 1920px;
+      background: var(--page-bg);
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .spec-header {
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .hrow {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border);
+    }
+    .hrow:last-child { border-bottom: none; }
+
+    .lbl {
+      background: var(--navy);
+      color: var(--navy-text);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      min-width: 92px;
+      border-right: 1px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .val {
+      color: var(--value-text);
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      border-right: 1px solid var(--border);
+    }
+    .val:last-child,
+    .val.no-right { border-right: none; }
+
+    /* project name - slightly larger */
+    .val.project-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: #3A3A5C;
+    }
+
+    /* meta group: 버전/작성일/작성자 */
+    .meta-group {
+      display: flex;
+      align-items: stretch;
+      flex-shrink: 0;
+    }
+    .meta-item {
+      display: flex;
+      align-items: stretch;
+      border-left: 1px solid var(--border);
+    }
+    .meta-item .val {
+      min-width: 120px;
+      flex: 0 0 auto;
+    }
+
+    /* page number — right-most column, spans all rows */
+    .page-col {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      border-left: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .page-col .lbl {
+      flex: 1;
+      justify-content: center;
+      min-width: 90px;
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .page-col .page-num {
+      flex: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.04em;
+      min-width: 90px;
+    }
+
+    /* row heights */
+    .hrow-meta  { height: 52px; }
+    .hrow-path  { height: 46px; }
+    .hrow-name  { height: 46px; }
+
+    /* ============================================================
+       CONTENT AREA
+    ============================================================ */
+    .spec-content {
+      display: flex;
+      align-items: stretch;
+      min-height: 1800px;
+    }
+
+    /* ── LEFT: Mockup ── */
+    .mockup-area {
+      flex: 1;
+      padding: 48px 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      border-right: 1.5px solid var(--border);
+      position: relative;
+    }
+
+    .mockup-inner {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Phone frame */
+    .phone {
+      width: 375px;
+      background: white;
+      border-radius: 44px;
+      border: 8px solid #18182E;
+      box-shadow:
+        0 0 0 1.5px #3A3A60,
+        0 24px 60px rgba(0,0,0,0.28);
+      overflow: hidden;
+    }
+
+    .phone-statusbar {
+      height: 50px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px 0;
+    }
+    .phone-time {
+      font-size: 15px;
+      font-weight: 600;
+      color: #18182E;
+      letter-spacing: -0.02em;
+    }
+    .phone-icons { display: flex; align-items: center; gap: 7px; }
+
+    .phone-screen {
+      min-height: 680px;
+      background: #F4F4F8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px 20px;
+      text-align: center;
+    }
+    .phone-screen-icon { opacity: 0.35; }
+    .phone-screen-label {
+      font-size: 13px;
+      color: #AAAAAA;
+      line-height: 1.6;
+    }
+    .phone-screen-sub {
+      font-size: 11px;
+      color: #CCCCCC;
+      margin-top: 4px;
+    }
+
+    .phone-indicator {
+      height: 34px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-indicator::after {
+      content: '';
+      width: 134px; height: 5px;
+      background: #18182E;
+      border-radius: 3px;
+    }
+
+    /* ── Number Tag ── */
+    .tag {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+    .tag-circle {
+      width: 48px;
+      height: 48px;
+      background: var(--badge-red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 22px;
+      font-weight: 800;
+      box-shadow: 0 3px 10px rgba(255,45,85,0.45);
+      letter-spacing: -0.02em;
+    }
+    .tag-tri {
+      width: 0; height: 0;
+      border-left:  10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top:   11px solid var(--badge-red);
+    }
+
+    /* ── RIGHT: Description ── */
+    .desc-area {
+      width: 628px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+
+    /* common section */
+    .d-common {
+      background: var(--section-bg);
+      padding: 22px 40px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .d-common-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dim-text);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    /* numbered section */
+    .d-section {
+      background: white;
+      padding: 22px 40px 20px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .d-section-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+    .d-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .d-badge-circle {
+      width: 34px; height: 34px;
+      background: var(--badge-red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .d-badge-tri {
+      width: 0; height: 0;
+      border-left:  8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top:   9px solid var(--badge-red);
+    }
+    .d-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1A1A2E;
+      padding-top: 5px;
+      letter-spacing: -0.03em;
+      line-height: 1.45;
+    }
+
+    .d-body {
+      margin-left: 46px;
+    }
+
+    /* sub-section */
+    .d-sub {
+      margin-top: 16px;
+    }
+    .d-sub-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+    .d-sub-badge {
+      background: var(--badge-red);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+      letter-spacing: 0;
+    }
+    .d-sub-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1A1A2E;
+      letter-spacing: -0.02em;
+      line-height: 1.5;
+    }
+    .d-sub-body {
+      padding-left: 44px;
+    }
+
+    /* bullet lists */
+    .blist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .blist li {
+      font-size: 14px;
+      color: var(--body-text);
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.65;
+      letter-spacing: -0.02em;
+    }
+    .blist li::before {
+      content: "·";
+      position: absolute;
+      left: 2px;
+      color: var(--dim-text);
+      font-weight: 700;
+    }
+    .d-sub-body .blist li {
+      font-size: 13.5px;
+      color: var(--sub-text);
+    }
+
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    /* ============================================================
+       PRINT
+    ============================================================ */
+    @media print {
+      body { background: white; padding: 0; }
+      .spec-page { box-shadow: none; border: none; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     SPEC PAGE 1 — 메인 (수강생)
+================================================================ -->
+<article class="spec-page">
+
+  <!-- ─── HEADER ─── -->
+  <header class="spec-header">
+
+    <!-- Row 1: 프로젝트명 + 메타 + 페이지 -->
+    <div class="hrow hrow-meta" style="position:relative;">
+      <div class="lbl">프로젝트명</div>
+      <div class="val project-name">스마트러닝앱 리뉴얼</div>
+      <div class="meta-group">
+        <div class="meta-item">
+          <div class="lbl">버전</div>
+          <div class="val" style="min-width:110px;">v 3.0</div>
+        </div>
+        <div class="meta-item">
+          <div class="lbl">작성일</div>
+          <div class="val" style="min-width:164px;">2026-02-27</div>
+        </div>
+        <div class="meta-item">
+          <div class="lbl">작성자</div>
+          <div class="val no-right" style="min-width:110px;">김진욱</div>
+        </div>
+      </div>
+      <!-- Page column: spans all 3 rows via rowspan simulation -->
+      <div class="page-col" style="position:absolute;right:0;top:0;height:140px;width:90px;display:flex;flex-direction:column;">
+        <div class="lbl" style="min-width:90px;justify-content:center;border-bottom:1px solid rgba(255,255,255,.15);flex:0 0 38px;border-right:none;">페이지</div>
+        <div class="page-num" style="flex:1;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;color:var(--navy);letter-spacing:-0.04em;background:white;border-top:none;">1</div>
+      </div>
+    </div>
+
+    <!-- Row 2: 화면경로 -->
+    <div class="hrow hrow-path">
+      <div class="lbl">화면 경로</div>
+      <div class="val no-right" style="padding-right: 120px;">하단 내비게이션 → 메인</div>
+    </div>
+
+    <!-- Row 3: 화면이름 -->
+    <div class="hrow hrow-name">
+      <div class="lbl">화면 이름</div>
+      <div class="val no-right" style="padding-right: 120px;">메인</div>
+    </div>
+
+  </header>
+
+  <!-- ─── CONTENT ─── -->
+  <div class="spec-content">
+
+    <!-- LEFT: Mockup -->
+    <div class="mockup-area">
+      <div class="mockup-inner">
+
+        <!-- Phone frame -->
+        <div class="phone">
+          <div class="phone-statusbar">
+            <span class="phone-time">9:41</span>
+            <div class="phone-icons">
+              <!-- Signal bars -->
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+                <rect x="0"   y="6" width="3" height="6" rx="1" fill="#18182E" opacity=".35"/>
+                <rect x="4.5" y="4" width="3" height="8" rx="1" fill="#18182E" opacity=".55"/>
+                <rect x="9"   y="2" width="3" height="10" rx="1" fill="#18182E" opacity=".75"/>
+                <rect x="13.5" y="0" width="3" height="12" rx="1" fill="#18182E"/>
+              </svg>
+              <!-- Wifi -->
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" fill="#18182E"/>
+                <path d="M3.5 6.3C4.9 5 6.3 4.3 8 4.3c1.7 0 3.1.7 4.5 2" stroke="#18182E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <path d="M1 3.5C3 1.7 5.4.5 8 .5s5 1.2 7 3" stroke="#18182E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              </svg>
+              <!-- Battery -->
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                <rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="#18182E" stroke-opacity=".35"/>
+                <rect x="2" y="2" width="16" height="8" rx="2" fill="#18182E"/>
+                <path d="M23 4.5v3c.8-.3 1.5-1 1.5-1.5s-.7-1.2-1.5-1.5Z" fill="#18182E" opacity=".4"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Screen placeholder -->
+          <div class="phone-screen">
+            <svg class="phone-screen-icon" width="52" height="52" viewBox="0 0 52 52" fill="none">
+              <rect x="6" y="4" width="40" height="44" rx="5" stroke="#888" stroke-width="2"/>
+              <line x1="6" y1="14" x2="46" y2="14" stroke="#888" stroke-width="1.5"/>
+              <rect x="12" y="20" width="28" height="14" rx="3" stroke="#888" stroke-width="1.5"/>
+              <line x1="12" y1="41" x2="40" y2="41" stroke="#888" stroke-width="1.5"/>
+              <line x1="12" y1="46" x2="32" y2="46" stroke="#888" stroke-width="1.5"/>
+            </svg>
+            <div class="phone-screen-label">
+              화면 목업 또는 와이어프레임을<br>이곳에 삽입하세요
+            </div>
+            <div class="phone-screen-sub">권장 크기: 375 × 812 (iPhone 기준)</div>
+          </div>
+
+          <div class="phone-indicator"></div>
+        </div>
+
+        <!-- Number Tags (position relative to mockup-inner) -->
+        <div class="tag" style="top: 160px; left: -28px;">
+          <div class="tag-circle">1</div>
+          <div class="tag-tri"></div>
+        </div>
+        <div class="tag" style="top: 310px; left: -28px;">
+          <div class="tag-circle">2</div>
+          <div class="tag-tri"></div>
+        </div>
+
+      </div><!-- /mockup-inner -->
+    </div><!-- /mockup-area -->
+
+    <!-- RIGHT: Description -->
+    <div class="desc-area">
+
+      <!-- 공통 -->
+      <div class="d-common">
+        <div class="d-common-title">공통</div>
+        <ul class="blist">
+          <li>[서브 헤더]는 화면 최상단에 고정 노출한다.</li>
+          <li>[뒤로가기] 버튼 클릭 시 이전 화면으로 이동한다.</li>
+          <li>[알림] 버튼 클릭 시 알림 목록 페이지로 이동한다.</li>
+          <li>[전체메뉴] 아이콘 클릭 시 우측에서 슬라이드 형태로 전체메뉴 패널이 노출된다.</li>
+        </ul>
+      </div>
+
+      <!-- Section 1 -->
+      <div class="d-section">
+        <div class="d-section-head">
+          <div class="d-badge">
+            <div class="d-badge-circle">1</div>
+            <div class="d-badge-tri"></div>
+          </div>
+          <div class="d-section-title">자주 쓰는 서비스</div>
+        </div>
+        <div class="d-body">
+          <ul class="blist">
+            <li>수강생 로그인 시 2열 그리드 아이콘 형태로 노출한다.</li>
+            <li>게스트/비수강생 시 기본 추천 서비스 5종을 노출한다.</li>
+            <li>아이콘 클릭 시 해당 서비스 페이지로 이동한다.</li>
+          </ul>
+          <!-- 1-1 -->
+          <div class="d-sub">
+            <div class="d-sub-head">
+              <span class="d-sub-badge">1-1</span>
+              <span class="d-sub-title">서비스 편집</span>
+            </div>
+            <div class="d-sub-body">
+              <ul class="blist">
+                <li>[편집] 버튼 클릭 시 서비스 편집 모드로 진입한다.</li>
+                <li>드래그 앤 드롭으로 순서를 변경할 수 있다.</li>
+                <li>최대 6개 등록 가능하며 초과 시 "최대 6개까지 추가할 수 있어요." Toast를 노출한다.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="d-section">
+        <div class="d-section-head">
+          <div class="d-badge">
+            <div class="d-badge-circle">2</div>
+            <div class="d-badge-tri"></div>
+          </div>
+          <div class="d-section-title">비수강생 진입 처리</div>
+        </div>
+        <div class="d-body">
+          <ul class="blist">
+            <li>비수강생 진입 시 수강생 전용 메뉴는 잠금 상태로 노출한다.</li>
+            <li>잠금 항목 클릭 시 "수강생 전용 메뉴입니다." Toast를 노출한다.</li>
+          </ul>
+          <!-- 2-1 -->
+          <div class="d-sub">
+            <div class="d-sub-head">
+              <span class="d-sub-badge">2-1</span>
+              <span class="d-sub-title">게스트 로그인 유도</span>
+            </div>
+            <div class="d-sub-body">
+              <ul class="blist">
+                <li>게스트 상태에서 수강생 전용 항목 클릭 시 로그인 유도 Modal을 노출한다.</li>
+                <li>[로그인하기] 버튼 클릭 시 로그인 페이지로 이동한다.</li>
+                <li>[닫기] 버튼 또는 배경 탭 시 Modal을 닫는다.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /desc-area -->
+
+  </div><!-- /spec-content -->
+</article>
+
+
+<!-- ================================================================
+     SPEC PAGE 2 — (새 화면 추가 예시)
+================================================================ -->
+<article class="spec-page">
+
+  <header class="spec-header">
+    <div class="hrow hrow-meta" style="position:relative;">
+      <div class="lbl">프로젝트명</div>
+      <div class="val project-name">스마트러닝앱 리뉴얼</div>
+      <div class="meta-group">
+        <div class="meta-item">
+          <div class="lbl">버전</div>
+          <div class="val" style="min-width:110px;">v 3.0</div>
+        </div>
+        <div class="meta-item">
+          <div class="lbl">작성일</div>
+          <div class="val" style="min-width:164px;">2026-02-27</div>
+        </div>
+        <div class="meta-item">
+          <div class="lbl">작성자</div>
+          <div class="val no-right" style="min-width:110px;">김진욱</div>
+        </div>
+      </div>
+      <div class="page-col" style="position:absolute;right:0;top:0;height:140px;width:90px;display:flex;flex-direction:column;">
+        <div class="lbl" style="min-width:90px;justify-content:center;border-bottom:1px solid rgba(255,255,255,.15);flex:0 0 38px;border-right:none;">페이지</div>
+        <div class="page-num" style="flex:1;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;color:var(--navy);letter-spacing:-0.04em;background:white;">2</div>
+      </div>
+    </div>
+    <div class="hrow hrow-path">
+      <div class="lbl">화면 경로</div>
+      <div class="val no-right" style="padding-right:120px;">화면 경로를 입력하세요</div>
+    </div>
+    <div class="hrow hrow-name">
+      <div class="lbl">화면 이름</div>
+      <div class="val no-right" style="padding-right:120px;">화면 이름을 입력하세요</div>
+    </div>
+  </header>
+
+  <div class="spec-content">
+
+    <!-- LEFT: Mockup -->
+    <div class="mockup-area">
+      <div class="mockup-inner">
+        <div class="phone">
+          <div class="phone-statusbar">
+            <span class="phone-time">9:41</span>
+            <div class="phone-icons">
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+                <rect x="0"   y="6" width="3" height="6" rx="1" fill="#18182E" opacity=".35"/>
+                <rect x="4.5" y="4" width="3" height="8" rx="1" fill="#18182E" opacity=".55"/>
+                <rect x="9"   y="2" width="3" height="10" rx="1" fill="#18182E" opacity=".75"/>
+                <rect x="13.5" y="0" width="3" height="12" rx="1" fill="#18182E"/>
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" fill="#18182E"/>
+                <path d="M3.5 6.3C4.9 5 6.3 4.3 8 4.3c1.7 0 3.1.7 4.5 2" stroke="#18182E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <path d="M1 3.5C3 1.7 5.4.5 8 .5s5 1.2 7 3" stroke="#18182E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              </svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                <rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="#18182E" stroke-opacity=".35"/>
+                <rect x="2" y="2" width="16" height="8" rx="2" fill="#18182E"/>
+                <path d="M23 4.5v3c.8-.3 1.5-1 1.5-1.5s-.7-1.2-1.5-1.5Z" fill="#18182E" opacity=".4"/>
+              </svg>
+            </div>
+          </div>
+          <div class="phone-screen">
+            <svg class="phone-screen-icon" width="52" height="52" viewBox="0 0 52 52" fill="none">
+              <rect x="6" y="4" width="40" height="44" rx="5" stroke="#888" stroke-width="2"/>
+              <line x1="6" y1="14" x2="46" y2="14" stroke="#888" stroke-width="1.5"/>
+              <rect x="12" y="20" width="28" height="14" rx="3" stroke="#888" stroke-width="1.5"/>
+              <line x1="12" y1="41" x2="40" y2="41" stroke="#888" stroke-width="1.5"/>
+              <line x1="12" y1="46" x2="32" y2="46" stroke="#888" stroke-width="1.5"/>
+            </svg>
+            <div class="phone-screen-label">
+              화면 목업 또는 와이어프레임을<br>이곳에 삽입하세요
+            </div>
+            <div class="phone-screen-sub">권장 크기: 375 × 812 (iPhone 기준)</div>
+          </div>
+          <div class="phone-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Description (empty template) -->
+    <div class="desc-area">
+
+      <div class="d-common">
+        <div class="d-common-title">공통</div>
+        <ul class="blist">
+          <li>공통 설명을 입력하세요.</li>
+        </ul>
+      </div>
+
+      <div class="d-section">
+        <div class="d-section-head">
+          <div class="d-badge">
+            <div class="d-badge-circle">1</div>
+            <div class="d-badge-tri"></div>
+          </div>
+          <div class="d-section-title">섹션 제목을 입력하세요</div>
+        </div>
+        <div class="d-body">
+          <ul class="blist">
+            <li>설명 내용을 입력하세요.</li>
+            <li>설명 내용을 입력하세요.</li>
+          </ul>
+          <div class="d-sub">
+            <div class="d-sub-head">
+              <span class="d-sub-badge">1-1</span>
+              <span class="d-sub-title">서브 섹션 제목</span>
+            </div>
+            <div class="d-sub-body">
+              <ul class="blist">
+                <li>서브 설명을 입력하세요.</li>
+                <li>서브 설명을 입력하세요.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-section">
+        <div class="d-section-head">
+          <div class="d-badge">
+            <div class="d-badge-circle">2</div>
+            <div class="d-badge-tri"></div>
+          </div>
+          <div class="d-section-title">섹션 제목을 입력하세요</div>
+        </div>
+        <div class="d-body">
+          <ul class="blist">
+            <li>설명 내용을 입력하세요.</li>
+            <li>설명 내용을 입력하세요.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</article>
+
+
+<!-- ================================================================
+     사용 가이드
+================================================================ -->
+<div style="width:1920px;background:white;border:1px solid #D8D8DC;padding:40px 60px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+  <div style="font-size:22px;font-weight:800;color:#2B2D55;margin-bottom:24px;letter-spacing:-0.03em;border-bottom:2px solid #FF2D55;padding-bottom:12px;">📋 화면설계서 템플릿 사용 가이드</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;font-size:14px;line-height:1.8;color:#444;">
+    <div>
+      <div style="font-weight:700;color:#2B2D55;margin-bottom:10px;font-size:16px;">헤더 편집</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;">
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">프로젝트명</code> → 프로젝트명 텍스트 수정</li>
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">버전</code> → v 3.0, v 2.0 등 버전 명기</li>
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">화면 경로</code> → 상위 메뉴 > 서브 형식으로 작성</li>
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">페이지</code> → 우측 상단 숫자 변경</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-weight:700;color:#2B2D55;margin-bottom:10px;font-size:16px;">목업 삽입</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;">
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">.phone-screen</code> div 안에 <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">&lt;img&gt;</code> 삽입</li>
+        <li>• 플레이스홀더 내용 삭제 후 이미지로 교체</li>
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">.tag</code> 클래스로 번호 태그 위치 조정</li>
+        <li>• top/left 값으로 정확한 위치 지정</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-weight:700;color:#2B2D55;margin-bottom:10px;font-size:16px;">설명 작성</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;">
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">.d-section</code> 블록 복사해 섹션 추가</li>
+        <li>• <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">.d-sub</code> 블록으로 하위 섹션(1-1, 1-2) 추가</li>
+        <li>• 배지 숫자는 <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">d-badge-circle</code> / <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">d-sub-badge</code> 텍스트 수정</li>
+        <li>• 새 페이지: <code style="background:#F0F0F5;padding:2px 6px;border-radius:3px;font-size:13px;">&lt;article class="spec-page"&gt;</code> 추가</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
