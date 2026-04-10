@@ -202,7 +202,7 @@ function ListItem({
       );
     }
     if (right.type === "menu") {
-      return <MoreButton />;
+      return <Asset type="icon" icon="⋯" size={32} shape="circle" background="transparent" />;
     }
     if (right.type === "custom") {
       return right.content || null;
@@ -737,19 +737,7 @@ function Modal({ title, description, primaryLabel = "확인", secondaryLabel = "
   );
 }
 
-// ─── MORE / CLOSE BUTTON ─────────────────────────────────────────────────────
-/**
- * MoreButton  - ⋯ 더보기
- * @prop {("dark"|"light")} [color] [default: "dark"]
- */
-function MoreButton({ color = "dark" }) {
-  return (
-    <button className={`w-[32px] h-[32px] rounded-full flex items-center justify-center text-[18px] ${color === "dark" ? "text-[#555]" : "text-[#aaa]"}`}>
-      ⋯
-    </button>
-  );
-}
-
+// ─── CLOSE BUTTON ────────────────────────────────────────────────────────────
 /**
  * CloseButton  - ✕ 닫기
  * @prop {("dark"|"light")} [color] [default: "dark"]
@@ -1829,7 +1817,7 @@ export default function App() {
     { label: "카드", items: ["AcademyCard", "AIAnswerCard", "ApplicationCard", "ClassCard", "CourseCard", "NotificationCard", "PostCard", "ProfileCard"] },
     { label: "내비게이션", items: ["BottomNavigationBar", "DrawerMenu", "NavBar", "TabBar"] },
     { label: "폼 요소", items: ["Checkbox", "DatePicker", "ImageAttachment", "InputField", "RadioButton", "SearchBar", "SelectField", "TextArea"] },
-    { label: "액션", items: ["CTAButton", "FloatingCartButton", "MoreButton"] },
+    { label: "액션", items: ["CTAButton", "FloatingCartButton", "CloseButton"] },
     { label: "피드백/오버레이", items: ["BottomSheet", "ContextMenu", "EmptyText", "Modal", "SkeletonUI", "Toast", "Tooltip"] },
     { label: "데이터/시각화", items: ["AttendanceCalendar", "ProgressBar", "StarRating", "StatusBadge", "StepIndicator", "Stepper"] },
     { label: "미디어", items: ["Attachment", "ImageViewer", "Slider"] },
@@ -2206,6 +2194,23 @@ export default function App() {
               ))}
             </div>
 
+            <SubHeader label="type=icon — UI 아이콘 예시 (⋯ more 포함)" />
+            <div className="flex items-center gap-4 flex-wrap">
+              {[
+                { icon: "⋯", label: "more" },
+                { icon: "✕", label: "close" },
+                { icon: "★", label: "star" },
+                { icon: "⚙️", label: "setting" },
+                { icon: "🔍", label: "search" },
+              ].map(({ icon, label }) => (
+                <div key={label} className="flex flex-col items-center gap-1.5">
+                  <Asset type="icon" icon={icon} size="sm" shape="circle" background="#f5f5f7" />
+                  <span className="text-[10px] text-[#888]">{label}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-[11px] text-[#aaa] mt-1 mb-4">※ MoreButton(⋯)은 Asset type="icon" icon="⋯" size=&#123;32&#125; shape="circle"으로 대체. background="transparent"로 투명 배경 적용 가능.</p>
+
             <SubHeader label="다른 컴포넌트 내 사용 예 — ListItem 아이콘 슬롯" />
             <div className="w-[360px]">
               <CardSlot mode="list">
@@ -2510,26 +2515,15 @@ export default function App() {
           </div>
         )}
 
-        {/* ── MoreButton / CloseButton ── */}
-        {nav === "MoreButton" && (
+        {/* ── CloseButton ── */}
+        {nav === "CloseButton" && (
           <div>
-            <SectionHeader name="MoreButton / CloseButton" tag="기존" />
-            <p className="text-[13px] text-[#555] mb-4">카드 우측 상단에 사용하는 보조 버튼. MoreButton(⋯)은 추가 메뉴, CloseButton(✕)은 닫기/삭제 액션에 사용합니다.</p>
+            <SectionHeader name="CloseButton" tag="기존" />
+            <p className="text-[13px] text-[#555] mb-4">카드 우측 상단에 사용하는 닫기/삭제 버튼. ✕ 아이콘으로 닫기 액션에 사용합니다. ⋯ 더보기는 <strong>Asset type="icon"</strong>으로 대체되었습니다.</p>
             <PropsTable rows={[
               { prop: "color", type: '"dark" | "light"', default: '"dark"', desc: "아이콘 색상" },
-              { prop: "size",  type: '"sm" | "md"',       default: '"md"',   desc: "버튼 크기 (CloseButton 전용)" },
+              { prop: "size",  type: '"sm" | "md"',       default: '"md"',   desc: "버튼 크기" },
             ]} />
-            <SubHeader label="MoreButton" />
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col items-center gap-1">
-                <MoreButton color="dark" />
-                <span className="text-[10px] text-[#aaa]">dark</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <MoreButton color="light" />
-                <span className="text-[10px] text-[#aaa]">light</span>
-              </div>
-            </div>
             <SubHeader label="CloseButton" />
             <div className="flex items-center gap-4">
               {["sm", "md"].map(s => (
@@ -2539,7 +2533,7 @@ export default function App() {
                 </div>
               ))}
             </div>
-            <SubHeader label="카드 내 조합 예시" />
+            <SubHeader label="카드 내 조합 예시 (⋯ → Asset type=icon)" />
             <div className="w-[360px]">
               <div className={tokens.card}>
                 <div className="px-4 py-3.5 flex items-start justify-between">
@@ -2547,7 +2541,7 @@ export default function App() {
                     <p className="font-bold text-[15px]">수학 기초반 A</p>
                     <p className="text-[12px] text-[#888] mt-0.5">강남 본원 · 매주 월·수</p>
                   </div>
-                  <MoreButton />
+                  <Asset type="icon" icon="⋯" size={32} shape="circle" background="transparent" />
                 </div>
               </div>
             </div>
