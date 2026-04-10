@@ -97,65 +97,158 @@ function CardSlot({ mode = "card", gap = 10, title, badge, children }) {
 
 // ─── LIST ITEM ────────────────────────────────────────────────────────────────
 /**
- * ListItem
- * @prop {string}  icon          - 이모지 또는 이미지 URL
- * @prop {("emoji"|"image")} iconType - 아이콘 타입  [default: "emoji"]
- * @prop {number}  iconSize      - 아이콘 컨테이너 크기 (px)  [default: 36]
- * @prop {string}  label         - 메인 라벨
- * @prop {string}  [description] - 서브 설명
- * @prop {string}  [meta]        - 세번째 줄 텍스트
- * @prop {Object}  [badge]       - { text, color }
- * @prop {("arrow"|"toggle"|"button"|"text-link")} action - 우측 액션 타입
- * @prop {Object}  [actionProps] - 액션별 추가 props
- *   toggle   → { checked, onChange }
- *   button   → { label, color }  [color default: "indigo"]
- *   text-link→ { label, color }
+ * ListItem  — 범용 리스트 셀: 좌측 에셋 + 1~3줄 텍스트 + 우측 요소 + 상태
+ *
+ * @prop {Object}  [asset]      - 에셋 (좌측 시각 요소)
+ *   { type, src, icon, size, shape, background }  → Asset 컴포넌트 props와 동일
+ *   type: "icon"|"emoji"|"image"|"avatar"  [default: "emoji"]
+ *   size: "sm"(28)|"md"(40)|"lg"(52)|"xl"(72)|px 숫자
+ *
+ * @prop {(string|Object)} [primary]   - 메인 텍스트 (1번째 줄)
+ * @prop {(string|Object)} [secondary] - 서브 텍스트 (2번째 줄)
+ * @prop {(string|Object)} [tertiary]  - 보조 텍스트 (3번째 줄)
+ *   TextObject: { text, size(xs~xl), weight(normal/medium/bold), color(hex), truncate(bool), lines(number) }
+ *
+ * @prop {Object}  [right]      - 우측 요소
+ *   { type: "none"|"arrow"|"badge"|"text"|"toggle"|"button"|"menu"|"custom" }
+ *   badge  → + { badge: { text, color, size } }
+ *   text   → + { text, color }
+ *   toggle → + { checked, onChange }
+ *   button → + { label, variant, size }
+ *   custom → + { content: ReactNode }
+ *
+ * @prop {boolean} [clickable]  - 클릭 가능 여부  [default: false]
+ * @prop {boolean} [disabled]   - 비활성 상태  [default: false]
+ * @prop {boolean} [restricted] - 접근 제한 상태  [default: false]
+ * @prop {boolean} [selected]   - 선택 상태  [default: false]
+ * @prop {("start"|"center")} [align]  - 에셋·우측 요소 세로 정렬  [default: "start"]
+ * @prop {string}  [paddingY]   - 상하 여백 Tailwind 클래스  [default: "py-3"]
+ * @prop {Function} [onClick]   - 행 전체 클릭 핸들러
  */
-function ListItem({ icon, iconType = "emoji", iconSize = 36, label, description, meta, badge, action = "arrow", actionProps = {}, onClick }) {
-  const iconStyle = { width: iconSize, height: iconSize, minWidth: iconSize };
+function ListItem({
+  asset,
+  primary,
+  secondary,
+  tertiary,
+  right,
+  clickable = false,
+  disabled = false,
+  restricted = false,
+  selected = false,
+  align = "start",
+  paddingY = "py-3",
+  onClick,
+}) {
+  const isClickable = clickable || !!onClick;
+
+  const TEXT_SIZE = { xs: "text-[11px]", sm: "text-[12px]", md: "text-[13px]", lg: "text-[14px]", xl: "text-[15px]" };
+  const TEXT_WEIGHT = { normal: "font-normal", medium: "font-medium", bold: "font-bold", semibold: "font-semibold" };
+
+  function resolveText(val, defaults) {
+    if (!val && val !== 0) return null;
+    if (typeof val === "string" || typeof val === "number") return { text: String(val), ...defaults };
+    return { ...defaults, ...val };
+  }
+
+  const p = resolveText(primary,   { size: "lg",  weight: "medium", color: "#1d1d1f" });
+  const s = resolveText(secondary, { size: "sm",  weight: "normal", color: "#888" });
+  const t = resolveText(tertiary,  { size: "xs",  weight: "normal", color: "#aaa" });
+
+  function renderText(obj) {
+    if (!obj) return null;
+    const sizeClass   = TEXT_SIZE[obj.size]   || "text-[14px]";
+    const weightClass = TEXT_WEIGHT[obj.weight] || "font-normal";
+    const truncateClass = obj.truncate
+      ? (obj.lines > 1 ? `line-clamp-${obj.lines}` : "truncate")
+      : "";
+    return (
+      <span
+        className={`leading-snug ${sizeClass} ${weightClass} ${truncateClass}`}
+        style={obj.color ? { color: obj.color } : {}}
+      >
+        {obj.text}
+      </span>
+    );
+  }
+
+  function renderRight() {
+    if (!right || right.type === "none") return null;
+    if (right.type === "arrow") {
+      return <span className="text-[16px] text-[#c7c7cc]">›</span>;
+    }
+    if (right.type === "badge") {
+      const b = right.badge || {};
+      return <Badge text={b.text} color={b.color || "gray"} size={b.size || "md"} />;
+    }
+    if (right.type === "text") {
+      return (
+        <span className="text-[13px] font-medium" style={{ color: right.color || "#888" }}>
+          {right.text}
+        </span>
+      );
+    }
+    if (right.type === "toggle") {
+      return <Toggle checked={right.checked ?? false} onChange={right.onChange ?? (() => {})} />;
+    }
+    if (right.type === "button") {
+      return (
+        <CTAButton
+          label={right.label || "확인"}
+          variant={right.variant || "primary"}
+          size={right.size || "sm"}
+        />
+      );
+    }
+    if (right.type === "menu") {
+      return <MoreButton />;
+    }
+    if (right.type === "custom") {
+      return right.content || null;
+    }
+    return null;
+  }
+
+  const rightEl = renderRight();
+
+  const stateClass = [
+    disabled ? "opacity-40 pointer-events-none" : "",
+    restricted && !disabled ? "opacity-55" : "",
+    selected ? "bg-[rgba(99,102,241,0.06)]" : "",
+    isClickable && !disabled ? "cursor-pointer active:bg-[#f5f5f7] transition-colors" : "",
+  ].filter(Boolean).join(" ");
+
+  const alignClass = align === "center" ? "items-center" : "items-start";
+
   return (
     <div
-      className={`flex items-start px-4 py-3 gap-3 ${onClick ? "cursor-pointer active:bg-[#f5f5f7] transition-colors" : ""}`}
-      onClick={onClick}
+      className={`flex ${alignClass} px-4 ${paddingY} gap-3 ${stateClass}`}
+      onClick={!disabled ? onClick : undefined}
     >
-      {/* Icon */}
-      <div
-        style={iconStyle}
-        className={`rounded-[8px] flex items-center justify-center bg-[#f5f5f7] mt-0.5 shrink-0 ${iconType === "image" ? "overflow-hidden" : ""}`}
-      >
-        {iconType === "image"
-          ? <img src={icon} className="w-full h-full object-cover" alt="" />
-          : <span style={{ fontSize: iconSize * 0.5 }}>{icon}</span>
-        }
-      </div>
+      {/* Asset */}
+      {asset && (
+        <div className={`shrink-0${align === "start" ? " mt-0.5" : ""}`}>
+          <Asset
+            type={asset.type || "emoji"}
+            src={asset.src}
+            icon={asset.icon}
+            size={asset.size || "md"}
+            shape={asset.shape || "rounded"}
+            background={asset.background}
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="font-medium text-[14px] text-[#1d1d1f] leading-snug">{label}</span>
-          {badge && <Badge text={badge.text} color={badge.color} size="md" />}
-        </div>
-        {description && <p className="text-[12px] text-[#888] mt-0.5 leading-snug">{description}</p>}
-        {meta && <p className="text-[11px] text-[#aaa] mt-0.5">{meta}</p>}
-
-        {/* Inline action (button/text-link under content) */}
-        {action === "button" && (
-          <button className={`mt-2 text-[13px] font-bold px-3 py-1 rounded-[7px] bg-[#6366f1] text-white`}>
-            {actionProps.label || "확인"}
-          </button>
-        )}
-        {action === "text-link" && (
-          <button className="mt-1.5 text-[13px] font-bold text-[#6366f1]">
-            {actionProps.label || "더보기"}
-          </button>
-        )}
+        {p && <div className="flex items-center gap-1.5 flex-wrap">{renderText(p)}</div>}
+        {s && <div className="mt-0.5">{renderText(s)}</div>}
+        {t && <div className="mt-0.5">{renderText(t)}</div>}
       </div>
 
-      {/* Right action — button/text-link는 content 아래에 있으므로 right 영역 불필요 */}
-      {(action === "arrow" || action === "toggle") && (
-        <div className="flex items-center mt-1 shrink-0">
-          {action === "arrow" && <span className="text-[16px] text-[#c7c7cc]">›</span>}
-          {action === "toggle" && <Toggle checked={actionProps.checked ?? false} onChange={actionProps.onChange ?? (() => {})} />}
+      {/* Right */}
+      {rightEl && (
+        <div className={`flex items-center shrink-0${align === "start" ? " mt-0.5" : ""}`}>
+          {rightEl}
         </div>
       )}
     </div>
@@ -277,12 +370,12 @@ function ApplicationCard({ academyName, className, schedule, status, showMoreMen
 function AcademyCard({ icon, category, academyName, registeredDate, applicationNumber, onClick }) {
   return (
     <ListItem
-      icon={icon}
-      iconSize={52}
-      label={category}
-      description={academyName}
-      meta={`등록일 ${registeredDate}  ·  원서번호 ${applicationNumber}`}
-      action="arrow"
+      asset={{ type: "emoji", icon, size: "lg" }}
+      primary={category}
+      secondary={academyName}
+      tertiary={`등록일 ${registeredDate}  ·  원서번호 ${applicationNumber}`}
+      right={{ type: "arrow" }}
+      clickable
       onClick={onClick}
     />
   );
@@ -1775,9 +1868,9 @@ export default function App() {
             <SubHeader label="mode = list (그룹 리스트)" />
             <div className="w-[360px]">
               <CardSlot mode="list" title="설정" badge="신규">
-                <ListItem icon="👤" label="프로필 편집" action="arrow" />
-                <ListItem icon="🔔" label="알림 설정" description="수강 알림, 커뮤니티 알림" action="toggle" actionProps={{ checked: toggleA, onChange: setToggleA }} />
-                <ListItem icon="📎" label="첨부파일" description="이미지 2개" badge={{ text: "신청완료", color: "green" }} action="text-link" actionProps={{ label: "편집" }} />
+                <ListItem asset={{ type: "emoji", icon: "👤" }} primary="프로필 편집" right={{ type: "arrow" }} clickable />
+                <ListItem asset={{ type: "emoji", icon: "🔔" }} primary="알림 설정" secondary="수강 알림, 커뮤니티 알림" right={{ type: "toggle", checked: toggleA, onChange: setToggleA }} />
+                <ListItem asset={{ type: "emoji", icon: "📎" }} primary="첨부파일" secondary="이미지 2개" right={{ type: "badge", badge: { text: "신청완료", color: "green" } }} />
               </CardSlot>
             </div>
           </div>
@@ -1787,53 +1880,105 @@ export default function App() {
         {nav === "ListItem" && (
           <div>
             <SectionHeader name="ListItem" tag="신규" />
-            <p className="text-[13px] text-[#555] mb-4">설정·정보 목록의 단일 행. CardSlot mode="list" 안에서 사용합니다.</p>
+            <p className="text-[13px] text-[#555] mb-4">
+              범용 리스트 셀 — <strong>좌측 에셋 + 1~3줄 텍스트 + 우측 요소 + 상태</strong>로 구성됩니다.
+              메뉴·설정·알림·수강 정보 등 모든 행 패턴에 재사용하세요.
+            </p>
             <PropsTable rows={[
-              { prop: "icon",        type: "string",                                    default: "—",       desc: "이모지 또는 이미지 URL" },
-              { prop: "iconType",    type: '"emoji" | "image"',                         default: '"emoji"', desc: "아이콘 렌더 방식" },
-              { prop: "iconSize",    type: "number",                                    default: "36",      desc: "아이콘 컨테이너 크기(px)" },
-              { prop: "label",       type: "string",                                    default: "—",       desc: "메인 라벨" },
-              { prop: "description", type: "string",                                    default: "—",       desc: "서브 텍스트 (2번째 줄)" },
-              { prop: "meta",        type: "string",                                    default: "—",       desc: "추가 텍스트 (3번째 줄)" },
-              { prop: "badge",       type: "{ text, color }",                           default: "—",       desc: "라벨 옆 인라인 뱃지" },
-              { prop: "action",      type: '"arrow" | "toggle" | "button" | "text-link"', default: '"arrow"', desc: "우측 액션 타입 (button/text-link는 content 하단 배치)" },
-              { prop: "actionProps", type: "object",                                    default: "{}",      desc: "액션별 추가 props (아래 참고)" },
-              { prop: "onClick",     type: "Function",                                  default: "—",       desc: "행 전체 클릭 핸들러 (지정 시 커서·hover 자동)" },
+              { prop: "asset (에셋)",               type: "Object",               default: "—",       desc: "좌측 시각 요소. { type, src, icon, size, shape, background } — Asset 컴포넌트 props와 동일" },
+              { prop: "primary (메인 텍스트)",       type: "string | TextObject",  default: "—",       desc: "1번째 줄. 가장 중요한 정보" },
+              { prop: "secondary (서브 텍스트)",     type: "string | TextObject",  default: "—",       desc: "2번째 줄. 부가 설명" },
+              { prop: "tertiary (보조 텍스트)",      type: "string | TextObject",  default: "—",       desc: "3번째 줄. 날짜·상태·추가 정보" },
+              { prop: "right (우측 요소)",           type: "{ type, ...payload }", default: "—",       desc: "none | arrow | badge | text | toggle | button | menu | custom" },
+              { prop: "clickable (클릭 가능 여부)",  type: "boolean",              default: "false",   desc: "커서·hover 효과 활성화. onClick 지정 시 자동 활성" },
+              { prop: "disabled (비활성 상태)",      type: "boolean",              default: "false",   desc: "opacity 감소 + 클릭 비활성" },
+              { prop: "restricted (접근 제한 상태)", type: "boolean",              default: "false",   desc: "수강생 전용 등 제한 행 스타일 (opacity 55%)" },
+              { prop: "selected (선택 상태)",        type: "boolean",              default: "false",   desc: "배경 인디고 하이라이트" },
+              { prop: "align (정렬)",                type: '"start" | "center"',   default: '"start"', desc: "에셋·우측 요소 세로 정렬" },
+              { prop: "paddingY (상하 여백)",        type: "string",               default: '"py-3"',  desc: "Tailwind 상하 패딩 클래스" },
+              { prop: "onClick",                    type: "Function",              default: "—",       desc: "행 전체 클릭 핸들러" },
             ]} />
-            <div className="text-[11px] text-[#888] mb-6 -mt-4">
-              actionProps: toggle → <code className="bg-[#f5f5f7] px-1 rounded">{"{ checked, onChange }"}</code> &nbsp;|&nbsp;
-              button → <code className="bg-[#f5f5f7] px-1 rounded">{"{ label }"}</code> &nbsp;|&nbsp;
-              text-link → <code className="bg-[#f5f5f7] px-1 rounded">{"{ label }"}</code>
+            <div className="text-[11px] text-[#888] mb-6 -mt-4 flex flex-col gap-1">
+              <p><strong>TextObject</strong>: text · size(xs/sm/md/lg/xl) · weight(normal/medium/bold) · color(hex) · truncate(bool) · lines(number)</p>
+              <p><strong>right.type</strong>: arrow · badge(+badge&#123;text,color&#125;) · text(+text,color) · toggle(+checked,onChange) · button(+label,variant,size) · menu · custom(+content)</p>
             </div>
 
-            <SubHeader label="action = arrow" />
+            <SubHeader label="right = arrow (메뉴·설정 리스트)" />
             <div className="w-[360px]">
               <CardSlot mode="list">
-                <ListItem icon="👤" label="프로필 편집" action="arrow" />
-                <ListItem icon="🏫" label="학원 정보" description="강남 프라임 학원" action="arrow" />
+                <ListItem asset={{ type: "emoji", icon: "👤" }} primary="프로필 편집" right={{ type: "arrow" }} clickable />
+                <ListItem asset={{ type: "emoji", icon: "🏫" }} primary="학원 정보" secondary="강남 프라임 학원" right={{ type: "arrow" }} clickable />
+                <ListItem asset={{ type: "emoji", icon: "🔒" }} primary="비밀번호 변경" right={{ type: "arrow" }} clickable />
               </CardSlot>
             </div>
 
-            <SubHeader label="action = toggle" />
+            <SubHeader label="right = toggle (설정 리스트)" />
             <div className="w-[360px]">
               <CardSlot mode="list">
-                <ListItem icon="🔔" label="알림 설정" description="수강 알림, 커뮤니티 알림" action="toggle" actionProps={{ checked: toggleA, onChange: setToggleA }} />
-                <ListItem icon="🌙" label="다크모드" action="toggle" actionProps={{ checked: toggleB, onChange: setToggleB }} />
+                <ListItem asset={{ type: "emoji", icon: "🔔" }} primary="알림 설정" secondary="수강 알림, 커뮤니티 알림" right={{ type: "toggle", checked: toggleA, onChange: setToggleA }} />
+                <ListItem asset={{ type: "emoji", icon: "🌙" }} primary="다크모드" right={{ type: "toggle", checked: toggleB, onChange: setToggleB }} />
               </CardSlot>
             </div>
 
-            <SubHeader label="action = text-link (+ badge)" />
+            <SubHeader label="right = badge (상태 뱃지 row — 수강 신청 현황)" />
             <div className="w-[360px]">
               <CardSlot mode="list">
-                <ListItem icon="📎" label="첨부파일" description="이미지 2개" badge={{ text: "신청완료", color: "green" }} action="text-link" actionProps={{ label: "편집" }} />
-                <ListItem icon="🖼️" iconType="emoji" iconSize={44} label="파이썬 기초 - 1강" description="자료구조 완전 정복" meta="3시간 전" action="arrow" />
+                <ListItem asset={{ type: "emoji", icon: "📋" }} primary="수학 기초반 A" secondary="강남 본원 · 개인 레슨" tertiary="2026.04.05 · 10:00" right={{ type: "badge", badge: { text: "신청완료", color: "green" } }} />
+                <ListItem asset={{ type: "emoji", icon: "📋" }} primary="영어 회화 중급" secondary="서초 지점 · 그룹 레슨" tertiary="2026.04.06 · 14:00" right={{ type: "badge", badge: { text: "대기중", color: "amber" } }} />
+                <ListItem asset={{ type: "emoji", icon: "📋" }} primary="과학 탐구반" secondary="분당 지점 · 그룹 레슨" tertiary="2026.04.07 · 09:00" right={{ type: "badge", badge: { text: "취소됨", color: "red" } }} />
               </CardSlot>
             </div>
 
-            <SubHeader label="iconSize 변형 (44px 이미지형)" />
+            <SubHeader label="right = text (우측 텍스트 정보)" />
             <div className="w-[360px]">
               <CardSlot mode="list">
-                <ListItem icon="🖼️" iconSize={44} label="파이썬 기초 - 1강" description="자료구조 완전 정복" meta="3시간 전" action="arrow" />
+                <ListItem asset={{ type: "emoji", icon: "🎫" }} primary="보유 쿠폰" right={{ type: "text", text: "3장", color: "#6366f1" }} clickable />
+                <ListItem asset={{ type: "emoji", icon: "⭐" }} primary="포인트" right={{ type: "text", text: "12,400P", color: "#6366f1" }} clickable />
+              </CardSlot>
+            </div>
+
+            <SubHeader label="disabled / restricted / selected 상태" />
+            <div className="w-[360px]">
+              <CardSlot mode="list">
+                <ListItem asset={{ type: "emoji", icon: "📚" }} primary="수강 신청" secondary="정상 상태" right={{ type: "arrow" }} clickable />
+                <ListItem asset={{ type: "emoji", icon: "🚫" }} primary="결제 내역" secondary="비활성 상태" right={{ type: "arrow" }} disabled />
+                <ListItem asset={{ type: "emoji", icon: "🔐" }} primary="학원 생활" secondary="수강생 전용 — 접근 제한" right={{ type: "arrow" }} restricted />
+                <ListItem asset={{ type: "emoji", icon: "✅" }} primary="알림 설정" secondary="선택된 상태" right={{ type: "arrow" }} selected clickable />
+              </CardSlot>
+            </div>
+
+            <SubHeader label="asset = avatar + 프로필 요약 row" />
+            <div className="w-[360px]">
+              <CardSlot mode="list">
+                <ListItem
+                  asset={{ type: "avatar", size: "md", shape: "circle" }}
+                  primary={{ text: "홍길동", size: "lg", weight: "bold" }}
+                  secondary="hong@email.com"
+                  tertiary="포인트 12,400P · 쿠폰 3장"
+                  right={{ type: "arrow" }}
+                  clickable
+                />
+              </CardSlot>
+            </div>
+
+            <SubHeader label="수강 정보 리스트 (3줄 텍스트 + 이모지 에셋)" />
+            <div className="w-[360px]">
+              <CardSlot mode="list">
+                <ListItem
+                  asset={{ type: "emoji", icon: "💻", size: "lg" }}
+                  primary={{ text: "파이썬 기초 완성반", size: "lg", weight: "bold" }}
+                  secondary="강남 IT 아카데미 · 1관 302호"
+                  tertiary="매주 화·목 19:00 ~ 21:00"
+                  right={{ type: "arrow" }}
+                  clickable
+                />
+                <ListItem
+                  asset={{ type: "emoji", icon: "🎨", size: "lg" }}
+                  primary={{ text: "포토샵 디자인 기초", size: "lg", weight: "bold" }}
+                  secondary="강남 IT 아카데미 · 2관 201호"
+                  tertiary="매주 월·수 10:00 ~ 12:00"
+                  right={{ type: "badge", badge: { text: "신청완료", color: "green" } }}
+                />
               </CardSlot>
             </div>
           </div>
