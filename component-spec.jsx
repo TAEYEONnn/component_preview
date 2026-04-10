@@ -191,11 +191,13 @@ function ListItem({
       return <Toggle checked={right.checked ?? false} onChange={right.onChange ?? (() => {})} />;
     }
     if (right.type === "button") {
+      const b = right.button || {};
       return (
         <CTAButton
-          label={right.label || "확인"}
-          variant={right.variant || "primary"}
-          size={right.size || "sm"}
+          label={b.label || right.label || "확인"}
+          variant={b.variant || right.variant || "primary"}
+          size={b.size || right.size || "sm"}
+          state={b.state || "default"}
         />
       );
     }
@@ -511,32 +513,49 @@ function NavBar({
 // ─── CTA BUTTON ───────────────────────────────────────────────────────────────
 /**
  * CTAButton
- * @prop {string}  label                                               - 버튼 텍스트
- * @prop {("primary"|"secondary"|"ghost"|"danger"|"text")} [variant]  - 스타일 [default: "primary"]
- * @prop {("sm"|"md"|"lg")} [size]                                     - 크기 [default: "md"]
- * @prop {boolean} [disabled]                                          - 비활성 [default: false]
- * @prop {boolean} [fullWidth]                                         - 전체 너비 [default: false]
+ * @prop {string}  label                                                       - 버튼 텍스트
+ * @prop {("primary"|"secondary"|"ghost"|"danger"|"text")} [variant]          - 버튼 유형  [default: "primary"]
+ * @prop {("sm"|"md"|"lg")} [size]                                             - 버튼 크기  [default: "md"]
+ * @prop {("default"|"pressed"|"disabled"|"loading")} [state]                 - 버튼 상태  [default: "default"]
+ * @prop {boolean} [fullWidth]                                                 - 전체 너비 여부  [default: false]
  */
-function CTAButton({ label, variant = "primary", size = "md", disabled = false, fullWidth = false, onClick }) {
-  const styles = {
-    primary:   "bg-[#6366f1] text-white",
-    secondary: "bg-[#e8f0fe] text-[#1a73e8]",
-    ghost:     "bg-white border border-[#ddd] text-[#333]",
-    danger:    "bg-[#fce4ec] text-[#c62828]",
-    text:      "bg-transparent text-[#6366f1]",
+function CTAButton({ label, variant = "primary", size = "md", state = "default", disabled = false, fullWidth = false, onClick }) {
+  const isDisabled = disabled || state === "disabled";
+  const isLoading  = state === "loading";
+  const isPressed  = state === "pressed";
+
+  const BASE = {
+    primary:   { default: "bg-[#6366f1] text-white",                          pressed: "bg-[#4f46e5] text-white"                          },
+    secondary: { default: "bg-[#e8f0fe] text-[#1a73e8]",                      pressed: "bg-[#d2e3fc] text-[#1a73e8]"                      },
+    ghost:     { default: "bg-white border border-[#ddd] text-[#333]",        pressed: "bg-[#f5f5f7] border border-[#ddd] text-[#333]"    },
+    danger:    { default: "bg-[#fce4ec] text-[#c62828]",                      pressed: "bg-[#f8bbd0] text-[#c62828]"                      },
+    text:      { default: "bg-transparent text-[#6366f1]",                    pressed: "bg-transparent text-[#4f46e5]"                    },
   };
+
   const sizes = {
     sm: "h-[32px] px-3.5 text-[12px] rounded-[8px]",
     md: "h-[42px] px-5 text-[14px] rounded-[10px]",
     lg: "h-[52px] px-6 text-[15px] rounded-[12px]",
   };
+
+  const variantStyle = (BASE[variant] || BASE.primary)[isPressed ? "pressed" : "default"];
+  const stateClass = isDisabled ? "opacity-40 cursor-not-allowed"
+    : isLoading ? "opacity-70 cursor-wait"
+    : "active:scale-[0.97]";
+
   return (
     <button
-      disabled={disabled}
+      disabled={isDisabled || isLoading}
       onClick={onClick}
-      className={`font-bold transition-opacity ${styles[variant]} ${sizes[size]} ${fullWidth ? "w-full" : ""} ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+      className={`font-bold transition-all ${variantStyle} ${sizes[size]} ${fullWidth ? "w-full" : ""} ${stateClass}`}
     >
-      {label}
+      {isLoading ? (
+        <span className="flex items-center justify-center gap-[3px]">
+          <span className="w-[4px] h-[4px] rounded-full bg-current animate-bounce" style={{ animationDelay: "0ms" }} />
+          <span className="w-[4px] h-[4px] rounded-full bg-current animate-bounce" style={{ animationDelay: "150ms" }} />
+          <span className="w-[4px] h-[4px] rounded-full bg-current animate-bounce" style={{ animationDelay: "300ms" }} />
+        </span>
+      ) : label}
     </button>
   );
 }
@@ -2260,36 +2279,80 @@ export default function App() {
         {nav === "CTAButton" && (
           <div>
             <SectionHeader name="CTAButton" tag="신규" />
-            <p className="text-[13px] text-[#555] mb-4">화면 내 주요 액션 버튼. variant·size·disabled·fullWidth 조합으로 모든 CTA 상황을 커버합니다.</p>
+            <p className="text-[13px] text-[#555] mb-4">variant · size · state · fullWidth 조합으로 모든 버튼 상황을 커버하는 최소 범용 버튼. ListItem right 영역에서도 재사용됩니다.</p>
             <PropsTable rows={[
-              { prop: "label",     type: "string",                                          default: "—",         desc: "버튼 텍스트" },
-              { prop: "variant",   type: '"primary"|"secondary"|"ghost"|"danger"|"text"',   default: '"primary"', desc: "색상 스타일" },
-              { prop: "size",      type: '"sm"|"md"|"lg"',                                  default: '"md"',      desc: "버튼 크기" },
-              { prop: "disabled",  type: "boolean",                                         default: "false",     desc: "비활성화" },
-              { prop: "fullWidth", type: "boolean",                                         default: "false",     desc: "100% 너비" },
-              { prop: "onClick",   type: "Function",                                        default: "—",         desc: "클릭 핸들러" },
+              { prop: "label (버튼 텍스트)",   type: "string",                                          default: "—",         desc: "버튼에 표시될 텍스트" },
+              { prop: "variant (버튼 유형)",   type: '"primary"|"secondary"|"ghost"|"danger"|"text"',   default: '"primary"', desc: "primary=주요 / secondary=보조 / ghost=외곽선 / danger=위험 / text=텍스트" },
+              { prop: "size (버튼 크기)",      type: '"sm"|"md"|"lg"',                                  default: '"md"',      desc: "sm=32px / md=42px / lg=52px" },
+              { prop: "state (버튼 상태)",     type: '"default"|"pressed"|"disabled"|"loading"',        default: '"default"', desc: "default=기본 / pressed=눌림(스타일만) / disabled=비활성 / loading=로딩(클릭불가)" },
+              { prop: "fullWidth (전체 너비)", type: "boolean",                                         default: "false",     desc: "true=100% 너비 / false=inline(내용만큼)" },
+              { prop: "onClick",              type: "Function",                                        default: "—",         desc: "클릭 핸들러" },
             ]} />
-            <SubHeader label="variant 전체" />
+
+            <SubHeader label="variant 전체 (size=md, state=default)" />
             <div className="flex flex-wrap gap-2">
               {["primary", "secondary", "ghost", "danger", "text"].map(v => (
                 <CTAButton key={v} label={v} variant={v} />
               ))}
             </div>
-            <SubHeader label="size 전체 (primary)" />
+
+            <SubHeader label="size 전체 (variant=primary)" />
             <div className="flex flex-wrap items-center gap-2">
               {["sm", "md", "lg"].map(s => (
                 <CTAButton key={s} label={s} size={s} />
               ))}
             </div>
-            <SubHeader label="disabled 상태" />
+
+            <SubHeader label="state 전체 (variant=primary)" />
+            <div className="flex flex-wrap items-center gap-3">
+              <CTAButton label="default" state="default" />
+              <CTAButton label="pressed" state="pressed" />
+              <CTAButton label="disabled" state="disabled" />
+              <CTAButton label="loading" state="loading" />
+            </div>
+
+            <SubHeader label="state = disabled (variant별)" />
             <div className="flex flex-wrap gap-2">
-              {["primary", "secondary", "ghost"].map(v => (
-                <CTAButton key={v} label={v} variant={v} disabled />
+              {["primary", "secondary", "ghost", "danger", "text"].map(v => (
+                <CTAButton key={v} label={v} variant={v} state="disabled" />
               ))}
             </div>
+
+            <SubHeader label="state = loading (variant별)" />
+            <div className="flex flex-wrap gap-2">
+              {["primary", "secondary", "ghost"].map(v => (
+                <CTAButton key={v} label={v} variant={v} state="loading" />
+              ))}
+            </div>
+
             <SubHeader label="fullWidth" />
-            <div className="w-[360px]">
+            <div className="w-[360px] flex flex-col gap-2">
               <CTAButton label="수강 신청하기" fullWidth />
+              <CTAButton label="대기 신청" variant="secondary" fullWidth />
+            </div>
+
+            <SubHeader label="ListItem 내부 button 케이스" />
+            <div className="w-[360px]">
+              <CardSlot mode="list">
+                <ListItem
+                  asset={{ type: "emoji", icon: "📚" }}
+                  primary="수학 기초반 A"
+                  secondary="강남 본원 · 개인 레슨"
+                  right={{ type: "button", button: { label: "신청하기", variant: "primary", size: "sm", state: "default" } }}
+                />
+                <ListItem
+                  asset={{ type: "emoji", icon: "📋" }}
+                  primary="영어 회화 중급"
+                  secondary="서초 지점 · 그룹 레슨"
+                  right={{ type: "button", button: { label: "대기 신청", variant: "secondary", size: "sm" } }}
+                />
+                <ListItem
+                  asset={{ type: "emoji", icon: "🚫" }}
+                  primary="과학 탐구반"
+                  secondary="분당 지점 — 마감"
+                  right={{ type: "button", button: { label: "마감", variant: "ghost", size: "sm", state: "disabled" } }}
+                />
+              </CardSlot>
             </div>
           </div>
         )}
