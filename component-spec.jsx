@@ -737,20 +737,7 @@ function Modal({ title, description, primaryLabel = "확인", secondaryLabel = "
   );
 }
 
-// ─── CLOSE BUTTON ────────────────────────────────────────────────────────────
-/**
- * CloseButton  - ✕ 닫기
- * @prop {("dark"|"light")} [color] [default: "dark"]
- * @prop {("sm"|"md")} [size] [default: "md"]
- */
-function CloseButton({ color = "dark", size = "md" }) {
-  const sz = size === "sm" ? "w-[24px] h-[24px] text-[14px]" : "w-[32px] h-[32px] text-[18px]";
-  return (
-    <button className={`rounded-full flex items-center justify-center bg-[#f5f5f7] ${sz} ${color === "dark" ? "text-[#555]" : "text-[#aaa]"}`}>
-      ✕
-    </button>
-  );
-}
+
 
 // ─── PROPS TABLE ──────────────────────────────────────────────────────────────
 function PropsTable({ rows }) {
