@@ -2502,39 +2502,7 @@ export default function App() {
           </div>
         )}
 
-        {/* ── CloseButton ── */}
-        {nav === "CloseButton" && (
-          <div>
-            <SectionHeader name="CloseButton" tag="기존" />
-            <p className="text-[13px] text-[#555] mb-4">카드 우측 상단에 사용하는 닫기/삭제 버튼. ✕ 아이콘으로 닫기 액션에 사용합니다. ⋯ 더보기는 <strong>Asset type="icon"</strong>으로 대체되었습니다.</p>
-            <PropsTable rows={[
-              { prop: "color", type: '"dark" | "light"', default: '"dark"', desc: "아이콘 색상" },
-              { prop: "size",  type: '"sm" | "md"',       default: '"md"',   desc: "버튼 크기" },
-            ]} />
-            <SubHeader label="CloseButton" />
-            <div className="flex items-center gap-4">
-              {["sm", "md"].map(s => (
-                <div key={s} className="flex flex-col items-center gap-1">
-                  <CloseButton size={s} />
-                  <span className="text-[10px] text-[#aaa]">{s}</span>
-                </div>
-              ))}
-            </div>
-            <SubHeader label="카드 내 조합 예시 (⋯ → Asset type=icon)" />
-            <div className="w-[360px]">
-              <div className={tokens.card}>
-                <div className="px-4 py-3.5 flex items-start justify-between">
-                  <div>
-                    <p className="font-bold text-[15px]">수학 기초반 A</p>
-                    <p className="text-[12px] text-[#888] mt-0.5">강남 본원 · 매주 월·수</p>
-                  </div>
-                  <Asset type="icon" icon="⋯" size={32} shape="circle" background="transparent" />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
+   
         {/* ── BottomNavigationBar ── */}
         {nav === "BottomNavigationBar" && (
           <div>
