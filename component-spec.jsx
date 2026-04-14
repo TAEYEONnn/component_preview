@@ -1804,7 +1804,7 @@ export default function App() {
     { label: "카드", items: ["AcademyCard", "AIAnswerCard", "ApplicationCard", "ClassCard", "CourseCard", "NotificationCard", "PostCard", "ProfileCard"] },
     { label: "내비게이션", items: ["BottomNavigationBar", "DrawerMenu", "NavBar", "TabBar"] },
     { label: "폼 요소", items: ["Checkbox", "DatePicker", "ImageAttachment", "InputField", "RadioButton", "SearchBar", "SelectField", "TextArea"] },
-    { label: "액션", items: ["CTAButton", "FloatingCartButton", "CloseButton"] },
+    { label: "액션", items: ["CTAButton", "FloatingCartButton"] },
     { label: "피드백/오버레이", items: ["BottomSheet", "ContextMenu", "EmptyText", "Modal", "SkeletonUI", "Toast", "Tooltip"] },
     { label: "데이터/시각화", items: ["AttendanceCalendar", "ProgressBar", "StarRating", "StatusBadge", "StepIndicator", "Stepper"] },
     { label: "미디어", items: ["Attachment", "ImageViewer", "Slider"] },
