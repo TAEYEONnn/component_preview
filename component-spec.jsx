@@ -17,15 +17,15 @@ const tokens = {
   card: "bg-white border border-[#ebebeb] rounded-[14px] overflow-hidden",
   divider: "h-px bg-[#f3f3f3]",
   badge: {
-    green:  { bg: "bg-[#e8f5e9]",              text: "text-[#2e7d32]" },
-    blue:   { bg: "bg-[#e8f0fe]",              text: "text-[#1a73e8]" },
-    indigo: { bg: "bg-[rgba(99,102,241,0.09)]",text: "text-[#6366f1]" },
-    amber:  { bg: "bg-[#fff8e1]",              text: "text-[#f57f17]" },
-    red:    { bg: "bg-[#fce4ec]",              text: "text-[#c62828]" },
-    gray:   { bg: "bg-[#f5f5f5]",              text: "text-[#888]" },
-    purple: { bg: "bg-[rgba(139,92,246,0.09)]",text: "text-[#8b5cf6]" },
-    sky:    { bg: "bg-[rgba(14,165,233,0.09)]",text: "text-[#0ea5e9]" },
-    emerald:{ bg: "bg-[rgba(34,197,94,0.09)]", text: "text-[#22c55e]" },
+    green: { bg: "bg-[#e8f5e9]", text: "text-[#2e7d32]" },
+    blue: { bg: "bg-[#e8f0fe]", text: "text-[#1a73e8]" },
+    indigo: { bg: "bg-[rgba(99,102,241,0.09)]", text: "text-[#6366f1]" },
+    amber: { bg: "bg-[#fff8e1]", text: "text-[#f57f17]" },
+    red: { bg: "bg-[#fce4ec]", text: "text-[#c62828]" },
+    gray: { bg: "bg-[#f5f5f5]", text: "text-[#888]" },
+    purple: { bg: "bg-[rgba(139,92,246,0.09)]", text: "text-[#8b5cf6]" },
+    sky: { bg: "bg-[rgba(14,165,233,0.09)]", text: "text-[#0ea5e9]" },
+    emerald: { bg: "bg-[rgba(34,197,94,0.09)]", text: "text-[#22c55e]" },
   },
 };
 
@@ -48,9 +48,8 @@ function Toggle({ checked, onChange }) {
       className={`relative w-[44px] h-[26px] rounded-full transition-colors ${checked ? "bg-[#6366f1]" : "bg-[#ddd]"}`}
     >
       <span
-        className={`absolute top-[2px] left-0 w-[22px] h-[22px] bg-white rounded-full shadow transition-transform ${
-          checked ? "translate-x-[20px]" : "translate-x-[2px]"
-        }`}
+        className={`absolute top-[2px] left-0 w-[22px] h-[22px] bg-white rounded-full shadow transition-transform ${checked ? "translate-x-[20px]" : "translate-x-[2px]"
+          }`}
       />
     </button>
   );
@@ -150,13 +149,13 @@ function ListItem({
     return { ...defaults, ...val };
   }
 
-  const p = resolveText(primary,   { size: "lg",  weight: "medium", color: "#1d1d1f" });
-  const s = resolveText(secondary, { size: "sm",  weight: "normal", color: "#888" });
-  const t = resolveText(tertiary,  { size: "xs",  weight: "normal", color: "#aaa" });
+  const p = resolveText(primary, { size: "lg", weight: "medium", color: "#1d1d1f" });
+  const s = resolveText(secondary, { size: "sm", weight: "normal", color: "#888" });
+  const t = resolveText(tertiary, { size: "xs", weight: "normal", color: "#aaa" });
 
   function renderText(obj) {
     if (!obj) return null;
-    const sizeClass   = TEXT_SIZE[obj.size]   || "text-[14px]";
+    const sizeClass = TEXT_SIZE[obj.size] || "text-[14px]";
     const weightClass = TEXT_WEIGHT[obj.weight] || "font-normal";
     const truncateClass = obj.truncate
       ? (obj.lines > 1 ? `line-clamp-${obj.lines}` : "truncate")
@@ -188,7 +187,7 @@ function ListItem({
       );
     }
     if (right.type === "toggle") {
-      return <Toggle checked={right.checked ?? false} onChange={right.onChange ?? (() => {})} />;
+      return <Toggle checked={right.checked ?? false} onChange={right.onChange ?? (() => { })} />;
     }
     if (right.type === "button") {
       const b = right.button || {};
@@ -325,8 +324,8 @@ function ClassCard({ time, title, location, lessonType, date, totalSeats, remain
 function ApplicationCard({ academyName, className, schedule, status, showMoreMenu = true, ctaLabel, ctaVariant = "primary" }) {
   const statusBadge = {
     "신청완료": { color: "green" },
-    "대기중":   { color: "amber" },
-    "취소됨":   { color: "red" },
+    "대기중": { color: "amber" },
+    "취소됨": { color: "red" },
   }[status] || { color: "gray" };
 
   return (
@@ -346,11 +345,10 @@ function ApplicationCard({ academyName, className, schedule, status, showMoreMen
       <p className="text-[13px] text-[#555] mt-2">📅 {schedule}</p>
       {ctaLabel && (
         <button
-          className={`w-full mt-3 h-[36px] rounded-[8px] text-[14px] font-bold ${
-            ctaVariant === "primary"
-              ? "bg-[#6366f1] text-white"
-              : "bg-[#f5f5f7] text-[#6366f1]"
-          }`}
+          className={`w-full mt-3 h-[36px] rounded-[8px] text-[14px] font-bold ${ctaVariant === "primary"
+            ? "bg-[#6366f1] text-white"
+            : "bg-[#f5f5f7] text-[#6366f1]"
+            }`}
         >
           {ctaLabel}
         </button>
@@ -407,15 +405,15 @@ function Asset({ type = "emoji", src, icon, alt = "", size = "md", shape = "roun
   const px = typeof size === "number" ? size : (SIZE_MAP[size] ?? 40);
 
   const SHAPE = {
-    circle:  "rounded-full",
-    square:  "rounded-none",
+    circle: "rounded-full",
+    square: "rounded-none",
     rounded: "rounded-[10px]",
   };
 
   const DEFAULT_BG = {
-    icon:   "#f5f5f7",
-    emoji:  "#f5f5f7",
-    image:  "#e8e8e8",
+    icon: "#f5f5f7",
+    emoji: "#f5f5f7",
+    image: "#e8e8e8",
     avatar: "#e8e8f0",
   };
   const bg = background || DEFAULT_BG[type] || "#f5f5f7";
@@ -429,8 +427,8 @@ function Asset({ type = "emoji", src, icon, alt = "", size = "md", shape = "roun
       {(type === "image" || (type === "avatar" && src))
         ? <img src={src} className="w-full h-full object-cover" alt={alt} />
         : type === "avatar"
-        ? <span style={{ fontSize }}>👤</span>
-        : <span style={{ fontSize }}>{icon}</span>
+          ? <span style={{ fontSize }}>👤</span>
+          : <span style={{ fontSize }}>{icon}</span>
       }
     </div>
   );
@@ -521,15 +519,15 @@ function NavBar({
  */
 function CTAButton({ label, variant = "primary", size = "md", state = "default", disabled = false, fullWidth = false, onClick }) {
   const isDisabled = disabled || state === "disabled";
-  const isLoading  = state === "loading";
-  const isPressed  = state === "pressed";
+  const isLoading = state === "loading";
+  const isPressed = state === "pressed";
 
   const BASE = {
-    primary:   { default: "bg-[#6366f1] text-white",                          pressed: "bg-[#4f46e5] text-white"                          },
-    secondary: { default: "bg-[#e8f0fe] text-[#1a73e8]",                      pressed: "bg-[#d2e3fc] text-[#1a73e8]"                      },
-    ghost:     { default: "bg-white border border-[#ddd] text-[#333]",        pressed: "bg-[#f5f5f7] border border-[#ddd] text-[#333]"    },
-    danger:    { default: "bg-[#fce4ec] text-[#c62828]",                      pressed: "bg-[#f8bbd0] text-[#c62828]"                      },
-    text:      { default: "bg-transparent text-[#6366f1]",                    pressed: "bg-transparent text-[#4f46e5]"                    },
+    primary: { default: "bg-[#6366f1] text-white", pressed: "bg-[#4f46e5] text-white" },
+    secondary: { default: "bg-[#e8f0fe] text-[#1a73e8]", pressed: "bg-[#d2e3fc] text-[#1a73e8]" },
+    ghost: { default: "bg-white border border-[#ddd] text-[#333]", pressed: "bg-[#f5f5f7] border border-[#ddd] text-[#333]" },
+    danger: { default: "bg-[#fce4ec] text-[#c62828]", pressed: "bg-[#f8bbd0] text-[#c62828]" },
+    text: { default: "bg-transparent text-[#6366f1]", pressed: "bg-transparent text-[#4f46e5]" },
   };
 
   const sizes = {
@@ -541,7 +539,7 @@ function CTAButton({ label, variant = "primary", size = "md", state = "default",
   const variantStyle = (BASE[variant] || BASE.primary)[isPressed ? "pressed" : "default"];
   const stateClass = isDisabled ? "opacity-40 cursor-not-allowed"
     : isLoading ? "opacity-70 cursor-wait"
-    : "active:scale-[0.97]";
+      : "active:scale-[0.97]";
 
   return (
     <button
@@ -673,11 +671,10 @@ function StepIndicator({ steps, current, variant = "bar" }) {
       {steps.map((label, i) => (
         <div key={i} className="flex items-center flex-1">
           <div className="flex flex-col items-center gap-1">
-            <div className={`w-[24px] h-[24px] rounded-full flex items-center justify-center text-[11px] font-bold ${
-              i + 1 < current ? "bg-[#6366f1] text-white" :
+            <div className={`w-[24px] h-[24px] rounded-full flex items-center justify-center text-[11px] font-bold ${i + 1 < current ? "bg-[#6366f1] text-white" :
               i + 1 === current ? "bg-[#6366f1] text-white ring-4 ring-[rgba(99,102,241,0.2)]" :
-              "bg-[#e0e0e0] text-[#aaa]"
-            }`}>{i + 1 < current ? "✓" : i + 1}</div>
+                "bg-[#e0e0e0] text-[#aaa]"
+              }`}>{i + 1 < current ? "✓" : i + 1}</div>
             <span className={`text-[10px] font-medium whitespace-nowrap ${i + 1 <= current ? "text-[#6366f1]" : "text-[#aaa]"}`}>{label}</span>
           </div>
           {i < steps.length - 1 && (
@@ -807,9 +804,8 @@ function TabBar({ tabs = [], activeTab: initialActive, style = "underline" }) {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-2 text-[13px] font-bold rounded-[8px] transition-all ${
-              tab === activeTab ? "bg-white text-[#1d1d1f] shadow-sm" : "text-[#888]"
-            }`}
+            className={`flex-1 py-2 text-[13px] font-bold rounded-[8px] transition-all ${tab === activeTab ? "bg-white text-[#1d1d1f] shadow-sm" : "text-[#888]"
+              }`}
           >
             {tab}
           </button>
@@ -823,9 +819,8 @@ function TabBar({ tabs = [], activeTab: initialActive, style = "underline" }) {
         <button
           key={tab}
           onClick={() => setActiveTab(tab)}
-          className={`flex-1 py-3 text-[13px] font-bold text-center transition-colors relative ${
-            tab === activeTab ? "text-[#6366f1]" : "text-[#aaa]"
-          }`}
+          className={`flex-1 py-3 text-[13px] font-bold text-center transition-colors relative ${tab === activeTab ? "text-[#6366f1]" : "text-[#aaa]"
+            }`}
         >
           {tab}
           {tab === activeTab && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#6366f1]" />}
@@ -942,9 +937,8 @@ function DrawerMenu({ loginState = "guest", isOpen = true, _demoToast = false })
           <button
             key={i}
             onClick={() => cat.restricted && triggerToast()}
-            className={`w-full flex items-center gap-3 px-5 py-3 text-left transition-colors ${
-              cat.restricted ? "opacity-55" : "hover:bg-[#f5f5f7]"
-            }`}
+            className={`w-full flex items-center gap-3 px-5 py-3 text-left transition-colors ${cat.restricted ? "opacity-55" : "hover:bg-[#f5f5f7]"
+              }`}
           >
             <span className="text-[18px]">{cat.icon}</span>
             <span className="text-[14px] font-medium text-[#1d1d1f]">{cat.label}</span>
@@ -1026,9 +1020,8 @@ function Checkbox({ text, checked = false, type = "optional", showArrow = false,
   const isAllAgree = type === "all";
   return (
     <button onClick={handleChange} className={`flex items-center gap-2.5 w-full py-2.5 ${isAllAgree ? "border-b border-[#ebebeb] pb-3 mb-1" : ""}`}>
-      <div className={`w-[22px] h-[22px] rounded-[6px] flex items-center justify-center shrink-0 transition-colors ${
-        isChecked ? "bg-[#6366f1] text-white" : "border-2 border-[#ddd] bg-white"
-      }`}>
+      <div className={`w-[22px] h-[22px] rounded-[6px] flex items-center justify-center shrink-0 transition-colors ${isChecked ? "bg-[#6366f1] text-white" : "border-2 border-[#ddd] bg-white"
+        }`}>
         {isChecked && <span className="text-[12px]">✓</span>}
       </div>
       <span className={`flex-1 text-left text-[14px] ${isAllAgree ? "font-bold text-[#1d1d1f]" : "text-[#333]"}`}>
@@ -1049,9 +1042,8 @@ function RadioButton({ options = [], value, disabled = false, onChange }) {
     <div className={`flex flex-col gap-2 ${disabled ? "opacity-50" : ""}`}>
       {options.map((opt, i) => (
         <button key={i} onClick={() => handleSelect(opt)} className="flex items-center gap-2.5 py-1.5" disabled={disabled}>
-          <div className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center transition-colors ${
-            selected === opt ? "border-[#6366f1]" : "border-[#ddd]"
-          }`}>
+          <div className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center transition-colors ${selected === opt ? "border-[#6366f1]" : "border-[#ddd]"
+            }`}>
             {selected === opt && <div className="w-[10px] h-[10px] rounded-full bg-[#6366f1]" />}
           </div>
           <span className={`text-[14px] ${selected === opt ? "font-medium text-[#1d1d1f]" : "text-[#555]"}`}>{opt}</span>
@@ -1134,12 +1126,11 @@ function DatePicker({ type = "calendar", value }) {
           <button
             key={i}
             onClick={() => d && setSelected(`${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`)}
-            className={`h-[32px] text-[12px] rounded-full transition-colors ${
-              !d ? "" :
+            className={`h-[32px] text-[12px] rounded-full transition-colors ${!d ? "" :
               selected === `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
                 ? "bg-[#6366f1] text-white font-bold"
                 : d === today.getDate() ? "text-[#6366f1] font-bold" : "text-[#333] hover:bg-[#f5f5f7]"
-            }`}
+              }`}
             disabled={!d}
           >
             {d || ""}
@@ -1180,9 +1171,8 @@ function FloatingCartButton({ count = 0 }) {
   const isActive = count > 0;
   return (
     <button
-      className={`relative w-[56px] h-[56px] rounded-full shadow-lg flex items-center justify-center transition-colors ${
-        isActive ? "bg-[#6366f1]" : "bg-[#ccc]"
-      }`}
+      className={`relative w-[56px] h-[56px] rounded-full shadow-lg flex items-center justify-center transition-colors ${isActive ? "bg-[#6366f1]" : "bg-[#ccc]"
+        }`}
       disabled={!isActive}
     >
       <span className="text-[24px]">🛒</span>
@@ -1361,11 +1351,10 @@ function Stepper({ variant = "generic", steps = [], currentStep = 1, dates }) {
         return (
           <div key={i} className="flex gap-3">
             <div className="flex flex-col items-center">
-              <div className={`w-[24px] h-[24px] rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${
-                isCompleted ? "bg-[#6366f1] text-white" :
+              <div className={`w-[24px] h-[24px] rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${isCompleted ? "bg-[#6366f1] text-white" :
                 isCurrent ? "bg-[#6366f1] text-white ring-4 ring-[rgba(99,102,241,0.15)]" :
-                "bg-[#e0e0e0] text-[#aaa]"
-              }`}>
+                  "bg-[#e0e0e0] text-[#aaa]"
+                }`}>
                 {isCompleted ? "✓" : i + 1}
               </div>
               {!isLast && <div className={`w-[2px] flex-1 min-h-[32px] ${isCompleted ? "bg-[#6366f1]" : "bg-[#e0e0e0]"}`} />}
@@ -1781,9 +1770,8 @@ function ContextMenu({ type = "my-post", isOpen = true }) {
       {items.map((item, i) => (
         <button
           key={i}
-          className={`w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[#f5f5f7] transition-colors ${
-            item.danger ? "text-[#ef4444]" : "text-[#1d1d1f]"
-          }`}
+          className={`w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[#f5f5f7] transition-colors ${item.danger ? "text-[#ef4444]" : "text-[#1d1d1f]"
+            }`}
         >
           <span className="text-[14px]">{item.icon}</span>
           <span className="text-[13px] font-medium">{item.label}</span>
@@ -1824,9 +1812,8 @@ export default function App() {
               <button
                 key={s}
                 onClick={() => setNav(s)}
-                className={`w-full text-left px-3 py-1.5 rounded-[8px] text-[12px] font-medium mb-0.5 transition-colors ${
-                  nav === s ? "bg-[#6366f1] text-white" : "text-[#555] hover:bg-[#f5f5f7]"
-                }`}
+                className={`w-full text-left px-3 py-1.5 rounded-[8px] text-[12px] font-medium mb-0.5 transition-colors ${nav === s ? "bg-[#6366f1] text-white" : "text-[#555] hover:bg-[#f5f5f7]"
+                  }`}
               >
                 {s}
               </button>
@@ -1844,11 +1831,11 @@ export default function App() {
             <SectionHeader name="CardSlot" tag="Container" />
             <p className="text-[13px] text-[#555] mb-4">아이템을 카드형 또는 리스트형으로 감싸는 컨테이너. <code className="bg-[#f5f5f7] px-1 rounded">mode</code> prop 하나로 레이아웃이 전환됩니다.</p>
             <PropsTable rows={[
-              { prop: "mode",     type: '"card" | "list"',   default: '"card"',  desc: "독립 카드 레이아웃 / 그룹 리스트 레이아웃" },
-              { prop: "gap",      type: "number",            default: "10",      desc: "card 모드 아이템 간격 (px)" },
-              { prop: "title",    type: "string",            default: "—",       desc: "섹션 타이틀" },
-              { prop: "badge",    type: '"신규" | "기존"',    default: "—",       desc: "타이틀 옆 뱃지" },
-              { prop: "children", type: "ReactNode",         default: "—",       desc: "아이템 목록 (ListItem, ClassCard 등)" },
+              { prop: "mode", type: '"card" | "list"', default: '"card"', desc: "독립 카드 레이아웃 / 그룹 리스트 레이아웃" },
+              { prop: "gap", type: "number", default: "10", desc: "card 모드 아이템 간격 (px)" },
+              { prop: "title", type: "string", default: "—", desc: "섹션 타이틀" },
+              { prop: "badge", type: '"신규" | "기존"', default: "—", desc: "타이틀 옆 뱃지" },
+              { prop: "children", type: "ReactNode", default: "—", desc: "아이템 목록 (ListItem, ClassCard 등)" },
             ]} />
 
             <SubHeader label="mode = card (독립 카드)" />
@@ -1879,18 +1866,18 @@ export default function App() {
               메뉴·설정·알림·수강 정보 등 모든 행 패턴에 재사용하세요.
             </p>
             <PropsTable rows={[
-              { prop: "asset (에셋)",               type: "Object",               default: "—",       desc: "좌측 시각 요소. { type, src, icon, size, shape, background } — Asset 컴포넌트 props와 동일" },
-              { prop: "primary (메인 텍스트)",       type: "string | TextObject",  default: "—",       desc: "1번째 줄. 가장 중요한 정보" },
-              { prop: "secondary (서브 텍스트)",     type: "string | TextObject",  default: "—",       desc: "2번째 줄. 부가 설명" },
-              { prop: "tertiary (보조 텍스트)",      type: "string | TextObject",  default: "—",       desc: "3번째 줄. 날짜·상태·추가 정보" },
-              { prop: "right (우측 요소)",           type: "{ type, ...payload }", default: "—",       desc: "none | arrow | badge | text | toggle | button | menu | custom" },
-              { prop: "clickable (클릭 가능 여부)",  type: "boolean",              default: "false",   desc: "커서·hover 효과 활성화. onClick 지정 시 자동 활성" },
-              { prop: "disabled (비활성 상태)",      type: "boolean",              default: "false",   desc: "opacity 감소 + 클릭 비활성" },
-              { prop: "restricted (접근 제한 상태)", type: "boolean",              default: "false",   desc: "수강생 전용 등 제한 행 스타일 (opacity 55%)" },
-              { prop: "selected (선택 상태)",        type: "boolean",              default: "false",   desc: "배경 인디고 하이라이트" },
-              { prop: "align (정렬)",                type: '"start" | "center"',   default: '"start"', desc: "에셋·우측 요소 세로 정렬" },
-              { prop: "paddingY (상하 여백)",        type: "string",               default: '"py-3"',  desc: "Tailwind 상하 패딩 클래스" },
-              { prop: "onClick",                    type: "Function",              default: "—",       desc: "행 전체 클릭 핸들러" },
+              { prop: "asset (에셋)", type: "Object", default: "—", desc: "좌측 시각 요소. { type, src, icon, size, shape, background } — Asset 컴포넌트 props와 동일" },
+              { prop: "primary (메인 텍스트)", type: "string | TextObject", default: "—", desc: "1번째 줄. 가장 중요한 정보" },
+              { prop: "secondary (서브 텍스트)", type: "string | TextObject", default: "—", desc: "2번째 줄. 부가 설명" },
+              { prop: "tertiary (보조 텍스트)", type: "string | TextObject", default: "—", desc: "3번째 줄. 날짜·상태·추가 정보" },
+              { prop: "right (우측 요소)", type: "{ type, ...payload }", default: "—", desc: "none | arrow | badge | text | toggle | button | menu | custom" },
+              { prop: "clickable (클릭 가능 여부)", type: "boolean", default: "false", desc: "커서·hover 효과 활성화. onClick 지정 시 자동 활성" },
+              { prop: "disabled (비활성 상태)", type: "boolean", default: "false", desc: "opacity 감소 + 클릭 비활성" },
+              { prop: "restricted (접근 제한 상태)", type: "boolean", default: "false", desc: "수강생 전용 등 제한 행 스타일 (opacity 55%)" },
+              { prop: "selected (선택 상태)", type: "boolean", default: "false", desc: "배경 인디고 하이라이트" },
+              { prop: "align (정렬)", type: '"start" | "center"', default: '"start"', desc: "에셋·우측 요소 세로 정렬" },
+              { prop: "paddingY (상하 여백)", type: "string", default: '"py-3"', desc: "Tailwind 상하 패딩 클래스" },
+              { prop: "onClick", type: "Function", default: "—", desc: "행 전체 클릭 핸들러" },
             ]} />
             <div className="text-[11px] text-[#888] mb-6 -mt-4 flex flex-col gap-1">
               <p><strong>TextObject</strong>: text · size(xs/sm/md/lg/xl) · weight(normal/medium/bold) · color(hex) · truncate(bool) · lines(number)</p>
@@ -1984,17 +1971,17 @@ export default function App() {
             <SectionHeader name="ClassCard" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">수업 일정 카드. CardSlot mode="card" 안에서 사용하며 status prop으로 버튼 상태가 결정됩니다.</p>
             <PropsTable rows={[
-              { prop: "time",           type: "string",                          default: "—",         desc: "수업 시작 시간" },
-              { prop: "title",          type: "string",                          default: "—",         desc: "반 이름" },
-              { prop: "location",       type: "string",                          default: "—",         desc: "지점명" },
-              { prop: "lessonType",     type: '"개인 레슨" | "그룹 레슨"',        default: "—",         desc: "수업 유형" },
-              { prop: "date",           type: "string",                          default: "—",         desc: "날짜 (YYYY.MM.DD)" },
-              { prop: "totalSeats",     type: "number",                          default: "—",         desc: "전체 정원" },
-              { prop: "remainingSeats", type: "number",                          default: "—",         desc: "잔여석" },
-              { prop: "waitingCount",   type: "number",                          default: "—",         desc: "대기자 수 (선택)" },
-              { prop: "myWaitingPos",   type: "number",                          default: "—",         desc: "내 대기 순번 (선택)" },
-              { prop: "isToday",        type: "boolean",                         default: "false",     desc: "오늘 뱃지 표시" },
-              { prop: "status",         type: '"available" | "waitlist" | "closed"', default: '"available"', desc: "신청 버튼 상태" },
+              { prop: "time", type: "string", default: "—", desc: "수업 시작 시간" },
+              { prop: "title", type: "string", default: "—", desc: "반 이름" },
+              { prop: "location", type: "string", default: "—", desc: "지점명" },
+              { prop: "lessonType", type: '"개인 레슨" | "그룹 레슨"', default: "—", desc: "수업 유형" },
+              { prop: "date", type: "string", default: "—", desc: "날짜 (YYYY.MM.DD)" },
+              { prop: "totalSeats", type: "number", default: "—", desc: "전체 정원" },
+              { prop: "remainingSeats", type: "number", default: "—", desc: "잔여석" },
+              { prop: "waitingCount", type: "number", default: "—", desc: "대기자 수 (선택)" },
+              { prop: "myWaitingPos", type: "number", default: "—", desc: "내 대기 순번 (선택)" },
+              { prop: "isToday", type: "boolean", default: "false", desc: "오늘 뱃지 표시" },
+              { prop: "status", type: '"available" | "waitlist" | "closed"', default: '"available"', desc: "신청 버튼 상태" },
             ]} />
 
             <SubHeader label='status = "available" (잔여석 있음)' />
@@ -2035,13 +2022,13 @@ export default function App() {
             <SectionHeader name="ApplicationCard" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">수강 신청 현황 카드. status로 뱃지 색상이 자동 결정되며, ctaLabel이 없으면 버튼을 숨깁니다.</p>
             <PropsTable rows={[
-              { prop: "academyName",  type: "string",                          default: "—",      desc: "학원명" },
-              { prop: "className",    type: "string",                          default: "—",      desc: "수업명" },
-              { prop: "schedule",     type: "string",                          default: "—",      desc: "일정 텍스트 (📅 자동 삽입)" },
-              { prop: "status",       type: '"신청완료" | "대기중" | "취소됨"',  default: "—",      desc: "상태 (뱃지 색상 자동)" },
-              { prop: "showMoreMenu", type: "boolean",                         default: "true",   desc: "⋯ 더보기 메뉴 표시 (취소됨 상태는 자동 숨김)" },
-              { prop: "ctaLabel",     type: "string",                          default: "—",      desc: "하단 버튼 텍스트 (없으면 버튼 숨김)" },
-              { prop: "ctaVariant",   type: '"primary" | "ghost"',             default: '"primary"', desc: "버튼 색상 스타일" },
+              { prop: "academyName", type: "string", default: "—", desc: "학원명" },
+              { prop: "className", type: "string", default: "—", desc: "수업명" },
+              { prop: "schedule", type: "string", default: "—", desc: "일정 텍스트 (📅 자동 삽입)" },
+              { prop: "status", type: '"신청완료" | "대기중" | "취소됨"', default: "—", desc: "상태 (뱃지 색상 자동)" },
+              { prop: "showMoreMenu", type: "boolean", default: "true", desc: "⋯ 더보기 메뉴 표시 (취소됨 상태는 자동 숨김)" },
+              { prop: "ctaLabel", type: "string", default: "—", desc: "하단 버튼 텍스트 (없으면 버튼 숨김)" },
+              { prop: "ctaVariant", type: '"primary" | "ghost"', default: '"primary"', desc: "버튼 색상 스타일" },
             ]} />
 
             <SubHeader label='status = "신청완료" + ctaLabel' />
@@ -2080,12 +2067,12 @@ export default function App() {
             <SectionHeader name="AcademyCard" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">등록된 학원 목록 행. <strong>ListItem 기반 베리에이션</strong>으로 내부적으로 ListItem을 사용합니다. CardSlot mode="list" 또는 mode="card" 안에서 사용합니다.</p>
             <PropsTable rows={[
-              { prop: "icon",              type: "string",   default: "—", desc: "이모지 아이콘 → ListItem icon" },
-              { prop: "category",          type: "string",   default: "—", desc: "과목 카테고리 → ListItem label" },
-              { prop: "academyName",       type: "string",   default: "—", desc: "학원명 + 지점명 → ListItem description" },
-              { prop: "registeredDate",    type: "string",   default: "—", desc: "등록일 → ListItem meta" },
-              { prop: "applicationNumber", type: "string",   default: "—", desc: "원서번호 → ListItem meta" },
-              { prop: "onClick",           type: "Function", default: "—", desc: "클릭 핸들러 → ListItem onClick" },
+              { prop: "icon", type: "string", default: "—", desc: "이모지 아이콘 → ListItem icon" },
+              { prop: "category", type: "string", default: "—", desc: "과목 카테고리 → ListItem label" },
+              { prop: "academyName", type: "string", default: "—", desc: "학원명 + 지점명 → ListItem description" },
+              { prop: "registeredDate", type: "string", default: "—", desc: "등록일 → ListItem meta" },
+              { prop: "applicationNumber", type: "string", default: "—", desc: "원서번호 → ListItem meta" },
+              { prop: "onClick", type: "Function", default: "—", desc: "클릭 핸들러 → ListItem onClick" },
             ]} />
 
             <SubHeader label="단독 카드" />
@@ -2114,22 +2101,22 @@ export default function App() {
               Badge·Toggle처럼 다른 컴포넌트(DrawerMenu, ListItem 등) 내부에서 재사용되거나 단독으로 사용됩니다.
             </p>
             <PropsTable rows={[
-              { prop: "type",       type: '"icon" | "emoji" | "image" | "avatar"',     default: '"emoji"',   desc: "렌더 방식 결정 — src 유무·기본 폴백 동작이 달라짐" },
-              { prop: "src",        type: "string",                                     default: "—",         desc: "이미지/아바타 URL" },
-              { prop: "icon",       type: "string",                                     default: "—",         desc: "아이콘 문자 또는 이모지 (icon/emoji type)" },
-              { prop: "alt",        type: "string",                                     default: '""',        desc: "이미지 대체 텍스트" },
-              { prop: "size",       type: 'number | "sm" | "md" | "lg" | "xl"',        default: '"md"',      desc: "sm=28 / md=40 / lg=52 / xl=72 / 직접 px 입력" },
-              { prop: "shape",      type: '"circle" | "square" | "rounded"',            default: '"rounded"', desc: "외형 — circle: 원형 / square: 직각 / rounded: 모서리 둥근 사각" },
-              { prop: "background", type: "string",                                     default: "type별 자동", desc: "배경색 (CSS color 또는 Tailwind arbitrary)" },
+              { prop: "type", type: '"icon" | "emoji" | "image" | "avatar"', default: '"emoji"', desc: "렌더 방식 결정 — src 유무·기본 폴백 동작이 달라짐" },
+              { prop: "src", type: "string", default: "—", desc: "이미지/아바타 URL" },
+              { prop: "icon", type: "string", default: "—", desc: "아이콘 문자 또는 이모지 (icon/emoji type)" },
+              { prop: "alt", type: "string", default: '""', desc: "이미지 대체 텍스트" },
+              { prop: "size", type: 'number | "sm" | "md" | "lg" | "xl"', default: '"md"', desc: "sm=28 / md=40 / lg=52 / xl=72 / 직접 px 입력" },
+              { prop: "shape", type: '"circle" | "square" | "rounded"', default: '"rounded"', desc: "외형 — circle: 원형 / square: 직각 / rounded: 모서리 둥근 사각" },
+              { prop: "background", type: "string", default: "type별 자동", desc: "배경색 (CSS color 또는 Tailwind arbitrary)" },
             ]} />
 
             <SubHeader label="type — 4종 비교" />
             <div className="flex items-end gap-4 flex-wrap">
               {[
-                { type: "emoji",  icon: "🏠", label: "emoji" },
-                { type: "icon",   icon: "★",  label: "icon" },
-                { type: "avatar", src: "",     label: "avatar (no src)" },
-                { type: "image",  src: "https://picsum.photos/seed/x1/80", label: "image" },
+                { type: "emoji", icon: "🏠", label: "emoji" },
+                { type: "icon", icon: "★", label: "icon" },
+                { type: "avatar", src: "", label: "avatar (no src)" },
+                { type: "image", src: "https://picsum.photos/seed/x1/80", label: "image" },
               ].map(({ type, icon, src, label }) => (
                 <div key={label} className="flex flex-col items-center gap-1.5">
                   <Asset type={type} icon={icon} src={src} size="lg" />
@@ -2202,7 +2189,7 @@ export default function App() {
             <div className="w-[360px]">
               <CardSlot mode="list">
                 <ListItem icon="👤" label="프로필 편집" action="arrow" />
-                <ListItem icon="🔔" iconSize={40} label="알림 설정" description="수강 알림, 커뮤니티 알림" action="toggle" actionProps={{ checked: false, onChange: () => {} }} />
+                <ListItem icon="🔔" iconSize={40} label="알림 설정" description="수강 알림, 커뮤니티 알림" action="toggle" actionProps={{ checked: false, onChange: () => { } }} />
               </CardSlot>
             </div>
             <p className="text-[11px] text-[#aaa] mt-2">※ ListItem은 내부적으로 Asset과 동일한 규격(size=iconSize, shape=rounded)을 사용합니다.</p>
@@ -2218,16 +2205,16 @@ export default function App() {
               <code className="bg-[#f5f5f7] px-1 rounded">variant="page"</code>는 내부 페이지 헤더(좌측아이콘+타이틀+우측아이콘)입니다.
             </p>
             <PropsTable rows={[
-              { prop: "variant",               type: '"global" | "page"',              default: '"page"',  desc: "헤더 유형" },
-              { prop: "title",                 type: "string",                          default: '""',      desc: "중앙 타이틀 (page)" },
-              { prop: "leftIcon",              type: '"back" | "close" | "none"',       default: '"back"',  desc: "좌측 아이콘 (page)" },
-              { prop: "rightIcon1",            type: "string",                          default: "—",       desc: "우측 아이콘1 (page): search/share/setting/more/alarm" },
-              { prop: "rightIcon2",            type: "string",                          default: "—",       desc: "우측 아이콘2 (page)" },
-              { prop: "notificationCount",     type: "number",                          default: "0",       desc: "알림 숫자 뱃지 (page, rightIcon1=alarm 일 때)" },
-              { prop: "logoClickable",         type: "boolean",                         default: "true",    desc: "로고 클릭 가능 여부 (global)" },
-              { prop: "showNotification",      type: "boolean",                         default: "true",    desc: "알림 아이콘 노출 (global)" },
-              { prop: "showNotificationBadge", type: "boolean",                         default: "false",   desc: "알림 빨간 점 뱃지 (global)" },
-              { prop: "showMenu",              type: "boolean",                         default: "true",    desc: "전체메뉴 아이콘 노출 (global)" },
+              { prop: "variant", type: '"global" | "page"', default: '"page"', desc: "헤더 유형" },
+              { prop: "title", type: "string", default: '""', desc: "중앙 타이틀 (page)" },
+              { prop: "leftIcon", type: '"back" | "close" | "none"', default: '"back"', desc: "좌측 아이콘 (page)" },
+              { prop: "rightIcon1", type: "string", default: "—", desc: "우측 아이콘1 (page): search/share/setting/more/alarm" },
+              { prop: "rightIcon2", type: "string", default: "—", desc: "우측 아이콘2 (page)" },
+              { prop: "notificationCount", type: "number", default: "0", desc: "알림 숫자 뱃지 (page, rightIcon1=alarm 일 때)" },
+              { prop: "logoClickable", type: "boolean", default: "true", desc: "로고 클릭 가능 여부 (global)" },
+              { prop: "showNotification", type: "boolean", default: "true", desc: "알림 아이콘 노출 (global)" },
+              { prop: "showNotificationBadge", type: "boolean", default: "false", desc: "알림 빨간 점 뱃지 (global)" },
+              { prop: "showMenu", type: "boolean", default: "true", desc: "전체메뉴 아이콘 노출 (global)" },
             ]} />
 
             <SubHeader label='variant = "global" — 기본 (알림뱃지 있음)' />
@@ -2273,12 +2260,12 @@ export default function App() {
             <SectionHeader name="CTAButton" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">variant · size · state · fullWidth 조합으로 모든 버튼 상황을 커버하는 최소 범용 버튼. ListItem right 영역에서도 재사용됩니다.</p>
             <PropsTable rows={[
-              { prop: "label (버튼 텍스트)",   type: "string",                                          default: "—",         desc: "버튼에 표시될 텍스트" },
-              { prop: "variant (버튼 유형)",   type: '"primary"|"secondary"|"ghost"|"danger"|"text"',   default: '"primary"', desc: "primary=주요 / secondary=보조 / ghost=외곽선 / danger=위험 / text=텍스트" },
-              { prop: "size (버튼 크기)",      type: '"sm"|"md"|"lg"',                                  default: '"md"',      desc: "sm=32px / md=42px / lg=52px" },
-              { prop: "state (버튼 상태)",     type: '"default"|"pressed"|"disabled"|"loading"',        default: '"default"', desc: "default=기본 / pressed=눌림(스타일만) / disabled=비활성 / loading=로딩(클릭불가)" },
-              { prop: "fullWidth (전체 너비)", type: "boolean",                                         default: "false",     desc: "true=100% 너비 / false=inline(내용만큼)" },
-              { prop: "onClick",              type: "Function",                                        default: "—",         desc: "클릭 핸들러" },
+              { prop: "label (버튼 텍스트)", type: "string", default: "—", desc: "버튼에 표시될 텍스트" },
+              { prop: "variant (버튼 유형)", type: '"primary"|"secondary"|"ghost"|"danger"|"text"', default: '"primary"', desc: "primary=주요 / secondary=보조 / ghost=외곽선 / danger=위험 / text=텍스트" },
+              { prop: "size (버튼 크기)", type: '"sm"|"md"|"lg"', default: '"md"', desc: "sm=32px / md=42px / lg=52px" },
+              { prop: "state (버튼 상태)", type: '"default"|"pressed"|"disabled"|"loading"', default: '"default"', desc: "default=기본 / pressed=눌림(스타일만) / disabled=비활성 / loading=로딩(클릭불가)" },
+              { prop: "fullWidth (전체 너비)", type: "boolean", default: "false", desc: "true=100% 너비 / false=inline(내용만큼)" },
+              { prop: "onClick", type: "Function", default: "—", desc: "클릭 핸들러" },
             ]} />
 
             <SubHeader label="variant 전체 (size=md, state=default)" />
@@ -2355,13 +2342,13 @@ export default function App() {
             <SectionHeader name="InputField" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">단일 행 텍스트 입력. label·hint·error·disabled 조합으로 폼 내 모든 입력 상태를 표현합니다.</p>
             <PropsTable rows={[
-              { prop: "label",       type: "string",  default: "—",      desc: "입력 레이블" },
-              { prop: "value",       type: "string",  default: "—",      desc: "입력 기본값" },
-              { prop: "placeholder", type: "string",  default: "—",      desc: "플레이스홀더" },
-              { prop: "hint",        type: "string",  default: "—",      desc: "하단 안내 텍스트" },
-              { prop: "error",       type: "string",  default: "—",      desc: "에러 메시지 (있으면 빨간 테두리)" },
-              { prop: "disabled",    type: "boolean", default: "false",  desc: "비활성화" },
-              { prop: "type",        type: "string",  default: '"text"', desc: "input type 속성" },
+              { prop: "label", type: "string", default: "—", desc: "입력 레이블" },
+              { prop: "value", type: "string", default: "—", desc: "입력 기본값" },
+              { prop: "placeholder", type: "string", default: "—", desc: "플레이스홀더" },
+              { prop: "hint", type: "string", default: "—", desc: "하단 안내 텍스트" },
+              { prop: "error", type: "string", default: "—", desc: "에러 메시지 (있으면 빨간 테두리)" },
+              { prop: "disabled", type: "boolean", default: "false", desc: "비활성화" },
+              { prop: "type", type: "string", default: '"text"', desc: "input type 속성" },
             ]} />
             <div className="w-[360px] flex flex-col gap-4">
               <SubHeader label="기본" />
@@ -2382,13 +2369,13 @@ export default function App() {
             <SectionHeader name="TextArea" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">여러 줄 텍스트 입력. InputField와 동일한 상태 구조를 가집니다.</p>
             <PropsTable rows={[
-              { prop: "label",       type: "string",  default: "—",     desc: "입력 레이블" },
-              { prop: "value",       type: "string",  default: "—",     desc: "입력 기본값" },
-              { prop: "placeholder", type: "string",  default: "—",     desc: "플레이스홀더" },
-              { prop: "rows",        type: "number",  default: "4",     desc: "기본 행 수" },
-              { prop: "hint",        type: "string",  default: "—",     desc: "하단 안내 텍스트" },
-              { prop: "error",       type: "string",  default: "—",     desc: "에러 메시지" },
-              { prop: "disabled",    type: "boolean", default: "false", desc: "비활성화" },
+              { prop: "label", type: "string", default: "—", desc: "입력 레이블" },
+              { prop: "value", type: "string", default: "—", desc: "입력 기본값" },
+              { prop: "placeholder", type: "string", default: "—", desc: "플레이스홀더" },
+              { prop: "rows", type: "number", default: "4", desc: "기본 행 수" },
+              { prop: "hint", type: "string", default: "—", desc: "하단 안내 텍스트" },
+              { prop: "error", type: "string", default: "—", desc: "에러 메시지" },
+              { prop: "disabled", type: "boolean", default: "false", desc: "비활성화" },
             ]} />
             <div className="w-[360px] flex flex-col gap-4">
               <SubHeader label="기본" />
@@ -2407,9 +2394,9 @@ export default function App() {
             <SectionHeader name="ImageAttachment" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">이미지 첨부 컴포넌트. 첨부된 이미지와 추가 버튼을 함께 표시하며 maxCount 초과 시 + 버튼이 사라집니다.</p>
             <PropsTable rows={[
-              { prop: "images",   type: "string[]", default: "[]",  desc: "첨부된 이미지 URL 목록" },
-              { prop: "maxCount", type: "number",   default: "5",   desc: "최대 첨부 가능 개수" },
-              { prop: "disabled", type: "boolean",  default: "false", desc: "비활성화 (삭제 버튼 숨김)" },
+              { prop: "images", type: "string[]", default: "[]", desc: "첨부된 이미지 URL 목록" },
+              { prop: "maxCount", type: "number", default: "5", desc: "최대 첨부 가능 개수" },
+              { prop: "disabled", type: "boolean", default: "false", desc: "비활성화 (삭제 버튼 숨김)" },
             ]} />
             <SubHeader label="빈 상태 (0/5)" />
             <ImageAttachment images={[]} maxCount={5} />
@@ -2426,8 +2413,8 @@ export default function App() {
             <SectionHeader name="StepIndicator" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">단계 진행 표시기. bar(선형)와 dot(점) 두 가지 variant를 제공합니다.</p>
             <PropsTable rows={[
-              { prop: "steps",   type: "string[]",      default: "—",     desc: "각 단계 레이블 배열" },
-              { prop: "current", type: "number",         default: "—",     desc: "현재 단계 (1-based)" },
+              { prop: "steps", type: "string[]", default: "—", desc: "각 단계 레이블 배열" },
+              { prop: "current", type: "number", default: "—", desc: "현재 단계 (1-based)" },
               { prop: "variant", type: '"bar" | "dot"', default: '"bar"', desc: "표시 스타일" },
             ]} />
             <SubHeader label='variant="bar" — 1단계' />
@@ -2455,10 +2442,10 @@ export default function App() {
             <SectionHeader name="EmptyText" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">리스트/콘텐츠가 없을 때 표시하는 빈 상태 컴포넌트. ctaLabel이 없으면 버튼을 숨깁니다.</p>
             <PropsTable rows={[
-              { prop: "icon",        type: "string",  default: "—",  desc: "이모지 아이콘" },
-              { prop: "title",       type: "string",  default: "—",  desc: "메인 타이틀" },
-              { prop: "description", type: "string",  default: "—",  desc: "보조 설명 텍스트" },
-              { prop: "ctaLabel",    type: "string",  default: "—",  desc: "버튼 텍스트 (없으면 숨김)" },
+              { prop: "icon", type: "string", default: "—", desc: "이모지 아이콘" },
+              { prop: "title", type: "string", default: "—", desc: "메인 타이틀" },
+              { prop: "description", type: "string", default: "—", desc: "보조 설명 텍스트" },
+              { prop: "ctaLabel", type: "string", default: "—", desc: "버튼 텍스트 (없으면 숨김)" },
             ]} />
             <SubHeader label="아이콘 + 설명 + 버튼" />
             <div className="w-[360px] bg-white rounded-[14px] border border-[#ebebeb]">
@@ -2481,11 +2468,11 @@ export default function App() {
             <SectionHeader name="Modal" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">확인/취소 다이얼로그. variant="danger"는 주요 버튼을 빨간색으로 강조합니다. (실제 사용 시 포털로 렌더)</p>
             <PropsTable rows={[
-              { prop: "title",           type: "string",              default: "—",         desc: "모달 타이틀" },
-              { prop: "description",     type: "string",              default: "—",         desc: "보조 설명" },
-              { prop: "primaryLabel",    type: "string",              default: '"확인"',     desc: "주요 버튼 텍스트" },
-              { prop: "secondaryLabel",  type: "string",              default: '"취소"',     desc: "보조 버튼 텍스트" },
-              { prop: "variant",         type: '"default"|"danger"',  default: '"default"', desc: "버튼 스타일" },
+              { prop: "title", type: "string", default: "—", desc: "모달 타이틀" },
+              { prop: "description", type: "string", default: "—", desc: "보조 설명" },
+              { prop: "primaryLabel", type: "string", default: '"확인"', desc: "주요 버튼 텍스트" },
+              { prop: "secondaryLabel", type: "string", default: '"취소"', desc: "보조 버튼 텍스트" },
+              { prop: "variant", type: '"default"|"danger"', default: '"default"', desc: "버튼 스타일" },
             ]} />
             <SubHeader label='variant="default"' />
             <div className="flex justify-center py-2">
@@ -2502,7 +2489,7 @@ export default function App() {
           </div>
         )}
 
-   
+
         {/* ── BottomNavigationBar ── */}
         {nav === "BottomNavigationBar" && (
           <div>
@@ -2552,9 +2539,9 @@ export default function App() {
               전체 메뉴 드로어. 사용자 상태 <strong>3가지</strong>(비회원 / 회원·미수강 / 수강생)에 따라 헤더·자주 쓰는 서비스·카테고리 메뉴가 모두 달라집니다.
             </p>
             <PropsTable rows={[
-              { prop: "loginState",  type: '"guest" | "nonStudent" | "student"', default: '"guest"', desc: "비회원 / 회원(미수강) / 수강생" },
-              { prop: "isOpen",      type: "boolean",                            default: "true",    desc: "드로어 열림 여부" },
-              { prop: "_demoToast",  type: "boolean",                            default: "false",   desc: "[문서용] true 시 접근 제한 Toast를 즉시 표시 (클릭 없이 정적 미리보기)" },
+              { prop: "loginState", type: '"guest" | "nonStudent" | "student"', default: '"guest"', desc: "비회원 / 회원(미수강) / 수강생" },
+              { prop: "isOpen", type: "boolean", default: "true", desc: "드로어 열림 여부" },
+              { prop: "_demoToast", type: "boolean", default: "false", desc: "[문서용] true 시 접근 제한 Toast를 즉시 표시 (클릭 없이 정적 미리보기)" },
             ]} />
 
             <SubHeader label='loginState = "guest" — 비회원' />
@@ -2584,13 +2571,13 @@ export default function App() {
               <code className="bg-[#f5f5f7] px-1 rounded">variant="inline"</code>은 텍스트 줄 안에 삽입되는 컴팩트형입니다.
             </p>
             <PropsTable rows={[
-              { prop: "variant",     type: '"form" | "inline"',                   default: '"form"',    desc: "폼형 / 인라인형" },
-              { prop: "label",       type: "string",                               default: "—",         desc: "레이블 (form 타입만)" },
-              { prop: "options",     type: "string[]",                             default: "[]",        desc: "옵션 목록 (클릭 시 드롭다운 열림)" },
-              { prop: "value",       type: "string",                               default: "—",         desc: "선택된 초기값" },
-              { prop: "status",      type: '"default" | "selected" | "disabled"',  default: '"default"', desc: "상태 (selected: 파란 테두리, disabled: 비활성)" },
-              { prop: "placeholder", type: "string",                               default: '"선택하세요"', desc: "플레이스홀더" },
-              { prop: "error",       type: "string",                               default: "—",         desc: "에러 메시지 (form 타입 / 빨간 테두리 + 하단 텍스트)" },
+              { prop: "variant", type: '"form" | "inline"', default: '"form"', desc: "폼형 / 인라인형" },
+              { prop: "label", type: "string", default: "—", desc: "레이블 (form 타입만)" },
+              { prop: "options", type: "string[]", default: "[]", desc: "옵션 목록 (클릭 시 드롭다운 열림)" },
+              { prop: "value", type: "string", default: "—", desc: "선택된 초기값" },
+              { prop: "status", type: '"default" | "selected" | "disabled"', default: '"default"', desc: "상태 (selected: 파란 테두리, disabled: 비활성)" },
+              { prop: "placeholder", type: "string", default: '"선택하세요"', desc: "플레이스홀더" },
+              { prop: "error", type: "string", default: "—", desc: "에러 메시지 (form 타입 / 빨간 테두리 + 하단 텍스트)" },
             ]} />
 
             <SubHeader label='variant = "form" — 기본 (미선택)' />
@@ -2777,12 +2764,12 @@ export default function App() {
             <SectionHeader name="BottomSheet" tag="신규" />
             <p className="text-[13px] text-[#555] mb-4">하단 시트. 기본/로그인유도/계정찾기/상담신청/대기신청/자주쓰는서비스 타입을 지원합니다.</p>
             <PropsTable rows={[
-              { prop: "type",            type: '"default" | "login-prompt" | "account-find" | "consult" | "waitlist" | "quick-service"', default: '"default"', desc: "시트 타입" },
-              { prop: "title",           type: "string",              default: "—",    desc: "타이틀 (default 타입만)" },
-              { prop: "isOpen",          type: "boolean",             default: "false", desc: "열림 여부" },
-              { prop: "services",        type: "{ id, icon, label }[]", default: "[]", desc: "서비스 목록 (quick-service 타입만)" },
-              { prop: "defaultSelected", type: "string[]",            default: "[]",   desc: "기본 선택 id 배열 (quick-service 타입만)" },
-              { prop: "maxSelect",       type: "number",              default: "10",   desc: "최대 선택 수 (quick-service 타입만)" },
+              { prop: "type", type: '"default" | "login-prompt" | "account-find" | "consult" | "waitlist" | "quick-service"', default: '"default"', desc: "시트 타입" },
+              { prop: "title", type: "string", default: "—", desc: "타이틀 (default 타입만)" },
+              { prop: "isOpen", type: "boolean", default: "false", desc: "열림 여부" },
+              { prop: "services", type: "{ id, icon, label }[]", default: "[]", desc: "서비스 목록 (quick-service 타입만)" },
+              { prop: "defaultSelected", type: "string[]", default: "[]", desc: "기본 선택 id 배열 (quick-service 타입만)" },
+              { prop: "maxSelect", type: "number", default: "10", desc: "최대 선택 수 (quick-service 타입만)" },
             ]} />
             <SubHeader label='type = "default"' />
             <BottomSheet type="default" title="옵션 선택" isOpen>
@@ -2806,16 +2793,16 @@ export default function App() {
               maxSelect={10}
               defaultSelected={["oneday", "job", "inquiry", "book", "bler"]}
               services={[
-                { id: "oneday",   icon: "🎨", label: "원데이클래스" },
-                { id: "job",      icon: "💼", label: "채용정보" },
-                { id: "inquiry",  icon: "💬", label: "내 학습문의" },
-                { id: "book",     icon: "📚", label: "교재몰" },
-                { id: "bler",     icon: "🎓", label: "BLER" },
-                { id: "test",     icon: "📝", label: "기출문제" },
+                { id: "oneday", icon: "🎨", label: "원데이클래스" },
+                { id: "job", icon: "💼", label: "채용정보" },
+                { id: "inquiry", icon: "💬", label: "내 학습문의" },
+                { id: "book", icon: "📚", label: "교재몰" },
+                { id: "bler", icon: "🎓", label: "BLER" },
+                { id: "test", icon: "📝", label: "기출문제" },
                 { id: "schedule", icon: "📅", label: "내 수업일정" },
-                { id: "review",   icon: "⭐", label: "수강후기" },
-                { id: "event",    icon: "🎉", label: "이벤트" },
-                { id: "faq",      icon: "❓", label: "FAQ" },
+                { id: "review", icon: "⭐", label: "수강후기" },
+                { id: "event", icon: "🎉", label: "이벤트" },
+                { id: "faq", icon: "❓", label: "FAQ" },
               ]}
             />
           </div>
