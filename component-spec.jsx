@@ -346,8 +346,8 @@ function ApplicationCard({ academyName, className, schedule, status, showMoreMen
       {ctaLabel && (
         <button
           className={`w-full mt-3 h-[36px] rounded-[8px] text-[14px] font-bold ${ctaVariant === "primary"
-            ? "bg-[#6366f1] text-white"
-            : "bg-[#f5f5f7] text-[#6366f1]"
+              ? "bg-[#6366f1] text-white"
+              : "bg-[#f5f5f7] text-[#6366f1]"
             }`}
         >
           {ctaLabel}
@@ -672,8 +672,8 @@ function StepIndicator({ steps, current, variant = "bar" }) {
         <div key={i} className="flex items-center flex-1">
           <div className="flex flex-col items-center gap-1">
             <div className={`w-[24px] h-[24px] rounded-full flex items-center justify-center text-[11px] font-bold ${i + 1 < current ? "bg-[#6366f1] text-white" :
-              i + 1 === current ? "bg-[#6366f1] text-white ring-4 ring-[rgba(99,102,241,0.2)]" :
-                "bg-[#e0e0e0] text-[#aaa]"
+                i + 1 === current ? "bg-[#6366f1] text-white ring-4 ring-[rgba(99,102,241,0.2)]" :
+                  "bg-[#e0e0e0] text-[#aaa]"
               }`}>{i + 1 < current ? "✓" : i + 1}</div>
             <span className={`text-[10px] font-medium whitespace-nowrap ${i + 1 <= current ? "text-[#6366f1]" : "text-[#aaa]"}`}>{label}</span>
           </div>
@@ -1127,9 +1127,9 @@ function DatePicker({ type = "calendar", value }) {
             key={i}
             onClick={() => d && setSelected(`${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`)}
             className={`h-[32px] text-[12px] rounded-full transition-colors ${!d ? "" :
-              selected === `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
-                ? "bg-[#6366f1] text-white font-bold"
-                : d === today.getDate() ? "text-[#6366f1] font-bold" : "text-[#333] hover:bg-[#f5f5f7]"
+                selected === `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
+                  ? "bg-[#6366f1] text-white font-bold"
+                  : d === today.getDate() ? "text-[#6366f1] font-bold" : "text-[#333] hover:bg-[#f5f5f7]"
               }`}
             disabled={!d}
           >
@@ -1352,8 +1352,8 @@ function Stepper({ variant = "generic", steps = [], currentStep = 1, dates }) {
           <div key={i} className="flex gap-3">
             <div className="flex flex-col items-center">
               <div className={`w-[24px] h-[24px] rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${isCompleted ? "bg-[#6366f1] text-white" :
-                isCurrent ? "bg-[#6366f1] text-white ring-4 ring-[rgba(99,102,241,0.15)]" :
-                  "bg-[#e0e0e0] text-[#aaa]"
+                  isCurrent ? "bg-[#6366f1] text-white ring-4 ring-[rgba(99,102,241,0.15)]" :
+                    "bg-[#e0e0e0] text-[#aaa]"
                 }`}>
                 {isCompleted ? "✓" : i + 1}
               </div>
